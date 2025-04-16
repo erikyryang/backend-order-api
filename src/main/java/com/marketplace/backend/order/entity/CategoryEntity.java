@@ -1,16 +1,14 @@
 package com.marketplace.backend.order.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryEntity {
@@ -19,6 +17,8 @@ public class CategoryEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(updatable = false, nullable = false, unique = true)
     private UUID uuid;
+
+    @Column(nullable = false)
     private String name;
     private String description;
 }

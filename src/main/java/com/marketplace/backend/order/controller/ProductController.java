@@ -1,43 +1,46 @@
 package com.marketplace.backend.order.controller;
 
 import com.marketplace.backend.order.dto.ProductCategoryDTO;
+import com.marketplace.backend.order.dto.ProductUpdateDTO;
 import com.marketplace.backend.order.entity.ProductEntity;
+import com.marketplace.backend.order.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.marketplace.backend.order.service.MenuService;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
-public class MenuController {
+public class ProductController {
 
-    private final MenuService menuService;
+    private final ProductService productService;
 
 
     @GetMapping
-    public ResponseEntity<ProductCategoryDTO> getProductsByCategory(
+    public ResponseEntity<ProductCategoryDTO> getByCategory(
             @RequestParam(defaultValue = "true") boolean retrieveAll,
             @RequestParam(required = false) String categoryUuid) {
 
-        ProductCategoryDTO products = menuService.findProductsByCategory(retrieveAll, categoryUuid);
+        ProductCategoryDTO products = productService.findByCategory(retrieveAll, categoryUuid);
         return ResponseEntity.ok(products);
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ProductEntity>> searchProductsByName(@RequestParam String name) {
-        List<ProductEntity> products = menuService.findProductsByName(name);
+    public ResponseEntity<List<ProductEntity>> searchByName(@RequestParam String name) {
+        List<ProductEntity> products = productService.findByName(name);
         return ResponseEntity.ok(products);
     }
 
     @PostMapping
-    public ResponseEntity<?> createProduct(@RequestBody ProductEntity product) {
+    public ResponseEntity<?> create(@RequestBody ProductUpdateDTO product) {
         try {
-            ProductEntity createdProduct = menuService.createProduct(product);
+            ProductEntity createdProduct = productService.save(product);
             return ResponseEntity.status(201).body(createdProduct);
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -48,9 +51,10 @@ public class MenuController {
     }
 
     @PutMapping("/{uuid}")
-    public ResponseEntity<?> updateProduct(@PathVariable String uuid, @RequestBody ProductEntity product) {
+    public ResponseEntity<?> update(@PathVariable String uuid, @RequestBody ProductUpdateDTO product) {
         try {
-            ProductEntity updatedProduct = menuService.updateProduct(uuid, product);
+            UUID productUuid = UUID.fromString(uuid);
+            ProductEntity updatedProduct = productService.update(productUuid, product);
             return ResponseEntity.ok(updatedProduct);
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();
@@ -61,9 +65,10 @@ public class MenuController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable String uuid) {
+    public ResponseEntity<?> delete(@PathVariable String uuid) {
         try {
-            menuService.deleteProduct(uuid);
+            UUID productUuid = UUID.fromString(uuid);
+            productService.deleteLogicallyByUuid(productUuid);
             return ResponseEntity.ok().build();
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();
