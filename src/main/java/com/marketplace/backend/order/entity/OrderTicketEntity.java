@@ -1,9 +1,6 @@
 package com.marketplace.backend.order.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +18,10 @@ public class OrderTicketEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
 
-    private UUID orderId;
+    private UUID orderUuid;
 
     private Integer tableNumber;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active = true;
 }
