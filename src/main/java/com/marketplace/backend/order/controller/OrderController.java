@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Controller
+@RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
 
@@ -25,7 +26,7 @@ public class OrderController {
         return ResponseEntity.ok(orderTicketService.create(orderTicketDTO));
     }
 
-    @PutMapping("/{uuid}")
+    @PutMapping("/update/{uuid}")
     public ResponseEntity<?> updateOrderTicket(@PathVariable UUID uuid, @RequestBody UpdateOrderTicketDTO updateOrderTicketDTO) {
         try {
             OrderTicketResponseDTO updated = orderTicketService.update(uuid, updateOrderTicketDTO);
@@ -38,7 +39,7 @@ public class OrderController {
         }
     }
 
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping("/delete/{uuid}")
     public ResponseEntity<?> deleteOrderTicket(@PathVariable UUID uuid) {
         try {
             orderTicketService.delete(uuid);

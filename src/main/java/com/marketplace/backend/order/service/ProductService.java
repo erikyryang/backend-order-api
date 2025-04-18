@@ -21,7 +21,7 @@ public class ProductService {
     private final CategoryService categoryService;
     private final ObjectMapper objectMapper;
 
-    private List<ProductEntity> findAll() {
+    public List<ProductEntity> findAll() {
         return productRepository.findAll();
     }
 

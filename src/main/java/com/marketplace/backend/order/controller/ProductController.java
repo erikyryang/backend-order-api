@@ -4,6 +4,7 @@ import com.marketplace.backend.order.dto.ProductCategoryDTO;
 import com.marketplace.backend.order.dto.ProductUpdateDTO;
 import com.marketplace.backend.order.entity.ProductEntity;
 import com.marketplace.backend.order.service.ProductService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,14 +16,15 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 
-@Controller
+@RestController
+@RequestMapping("/product")
 @RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ProductCategoryDTO> getByCategory(
             @RequestParam(defaultValue = "true") boolean retrieveAll,
             @RequestParam(required = false) String categoryUuid) {
@@ -64,7 +66,7 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{uuid}")
     public ResponseEntity<?> delete(@PathVariable String uuid) {
         try {
             UUID productUuid = UUID.fromString(uuid);
