@@ -12,6 +12,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "order_tbl")
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

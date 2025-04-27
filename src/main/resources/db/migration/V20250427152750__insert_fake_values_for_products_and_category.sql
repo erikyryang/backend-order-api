@@ -1,0 +1,20 @@
+-- src/main/resources/db/migration/V3__insert_initial_data.sql
+
+-- Inserções na tabela category_tbl
+INSERT INTO category_tbl (uuid, name, description) VALUES
+                                                       ('550e8400-e29b-41d4-a716-446655440000', 'Entradas', 'Aperitivos e entradas para abrir o apetite'),
+                                                       ('550e8400-e29b-41d4-a716-446655440001', 'Pratos Principais', 'Pratos completos e principais'),
+                                                       ('550e8400-e29b-41d4-a716-446655440002', 'Sobremesas', 'Doces e sobremesas deliciosas'),
+                                                       ('550e8400-e29b-41d4-a716-446655440003', 'Bebidas', 'Refrigerantes, sucos e outras bebidas'),
+                                                       ('550e8400-e29b-41d4-a716-446655440004', 'Lanches', 'Opções rápidas e sanduíches');
+
+-- Inserções na tabela product_tbl
+INSERT INTO product_tbl (uuid, name, description, price, category_uuid, category_name, image_url, quantity, active) VALUES
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c2d', 'Bruschetta', 'Torradas com tomate, manjericão e azeite de oliva', 12.90, '550e8400-e29b-41d4-a716-446655440000', 'Entradas', 'https://example.com/images/bruschetta.jpg', 50, true),
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c2e', 'Filé Mignon ao Molho Madeira', 'Filé mignon grelhado com molho madeira e acompanhamento', 49.90, '550e8400-e29b-41d4-a716-446655440001', 'Pratos Principais', 'https://example.com/images/file_mignon.jpg', 30, true),
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c2f', 'Cheesecake com Calda de Frutas', 'Cheesecake cremoso com calda de frutas vermelhas', 15.90, '550e8400-e29b-41d4-a716-446655440002', 'Sobremesas', 'https://example.com/images/cheesecake.jpg', 20, true),
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c30', 'Suco de Laranja Natural', 'Suco de laranja fresco 300ml', 7.50, '550e8400-e29b-41d4-a716-446655440003', 'Bebidas', 'https://example.com/images/suco_laranja.jpg', 100, true),
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c31', 'Hambúrguer Clássico', 'Hambúrguer com carne, alface, tomate e maionese', 19.90, '550e8400-e29b-41d4-a716-446655440004', 'Lanches', 'https://example.com/images/hamburguer.jpg', 40, true),
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c32', 'Camarão Empanado', 'Camarões empanados com molho tártaro', 29.90, '550e8400-e29b-41d4-a716-446655440000', 'Entradas', 'https://example.com/images/camarao.jpg', 25, true),
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c33', 'Pizza Margherita', 'Pizza com molho de tomate, muçarela e manjericão', 34.90, '550e8400-e29b-41d4-a716-446655440001', 'Pratos Principais', 'https://example.com/images/pizza.jpg', 15, true),
+                                                                                                                        ('6b3f8c1a-4b7e-4d2f-9c1b-7e8f9a0b1c34', 'Refrigerante Cola', 'Lata de refrigerante cola 350ml', 5.90, '550e8400-e29b-41d4-a716-446655440003', 'Bebidas', 'https://example.com/images/refrigerante.jpg', 80, true);

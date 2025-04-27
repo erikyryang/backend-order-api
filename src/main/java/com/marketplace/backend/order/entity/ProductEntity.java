@@ -1,6 +1,7 @@
 package com.marketplace.backend.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.marketplace.backend.order.dto.ProductDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Table(name = "product_tbl")
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,5 +43,9 @@ public class ProductEntity {
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
     private boolean active = true;
+
+    @Column(nullable = false)
+    private String categoryName;
+
 
 }

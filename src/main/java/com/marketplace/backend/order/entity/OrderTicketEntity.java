@@ -13,6 +13,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "order_ticket_tbl")
 public class OrderTicketEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
