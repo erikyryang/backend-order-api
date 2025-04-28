@@ -47,5 +47,12 @@ public class ProductEntity {
     @Column(nullable = false)
     private String categoryName;
 
-
+    public OrderItemEntity toOrderItemEntity() {
+        OrderItemEntity orderItemEntity = new OrderItemEntity();
+        orderItemEntity.setName(name);
+        orderItemEntity.setActive(true);
+        orderItemEntity.setQuantity(quantity);
+        orderItemEntity.setPrice(price);
+        return orderItemEntity;
+    }
 }

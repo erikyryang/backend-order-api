@@ -94,6 +94,7 @@ public class ProductService {
         if (updatedProduct.getCategoryName() != null) {
             CategoryEntity category = categoryService.saveIfNotExistsByName(updatedProduct.getCategoryName());
             existingProduct.setCategoryUuid(category.getUuid());
+            existingProduct.setCategoryName(category.getName());
         }
         if (updatedProduct.getImageUrl() != null) {
             existingProduct.setImageUrl(updatedProduct.getImageUrl());
