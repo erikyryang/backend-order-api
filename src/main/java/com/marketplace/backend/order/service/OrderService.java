@@ -1,10 +1,10 @@
 package com.marketplace.backend.order.service;
 
 import com.marketplace.backend.order.dto.CreateOrderDTO;
-import com.marketplace.backend.order.dto.ProductCategoryDTO;
-import com.marketplace.backend.order.entity.CategoryEntity;
+import com.marketplace.backend.order.dto.UpdateOrderDTO;
 import com.marketplace.backend.order.entity.OrderEntity;
 import com.marketplace.backend.order.entity.ProductEntity;
+import com.marketplace.backend.order.enums.OrderStatus;
 import com.marketplace.backend.order.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,20 +34,28 @@ public class OrderService {
                 .tableName(createOrderDTO.getTableName())
                 .itens(convertProductsToOrderItem(products))
                 .observations(createOrderDTO.getObservations())
+                .status(OrderStatus.PENDING)
                 .total(calculateItemsTotal(products))
                 .build();
         return orderRepository.save(order);
     }
 
-    public OrderEntity update(List<ProductEntity> products, Double orderId) {
-        OrderEntity order = orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+    public OrderEntity update(Double id, UpdateOrderDTO updateOrderDTO) {
+        OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        List<ProductEntity> products = new ArrayList<>();
+
+        updateOrderDTO.getItems().forEach(item -> {
+            ProductEntity product = productService.findByUuid(UUID.fromString(item.getUuid()));
+            products.add(product);
+        });
         order.setItens(convertProductsToOrderItem(products));
+
         return orderRepository.save(order);
     }
 
-    public List<OrderEntity> findByOrderUuid(boolean retrieveAll, String orderId) {
+    public List<OrderEntity> findByOrderId(boolean retrieveAll, String orderId) {
         if (retrieveAll) {
-            return orderRepository.findAll();
+            return orderRepository.findAllByActiveTrue();
         }
 
         if (orderId == null || orderId.trim().isEmpty()) {
@@ -61,5 +69,9 @@ public class OrderService {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid UUID format: " + orderId, e);
         }
+    }
+
+    public void deleteLogicallyByUuid(Double id) {
+        orderRepository.deleteLogicallyByUuid(id);
     }
 }
