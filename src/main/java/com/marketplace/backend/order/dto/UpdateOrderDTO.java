@@ -14,6 +14,7 @@ import java.util.List;
 public class UpdateOrderDTO {
     private String tableName;
     private String observations;
+    private String paymentMethod;
     private List<CreateOrderDTO.ItemDTO> items;
 
     @Getter

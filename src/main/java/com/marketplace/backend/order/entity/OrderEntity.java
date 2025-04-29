@@ -33,6 +33,8 @@ public class OrderEntity {
 
     private String observations;
 
+    private String paymentMethod;
+
     private String tableName;
 
     @Enumerated(EnumType.STRING)

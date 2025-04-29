@@ -34,6 +34,8 @@ public class OrderService {
                 .tableName(createOrderDTO.getTableName())
                 .itens(convertProductsToOrderItem(products))
                 .observations(createOrderDTO.getObservations())
+                .active(true)
+                .paymentMethod(createOrderDTO.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .total(calculateItemsTotal(products))
                 .build();
@@ -49,6 +51,18 @@ public class OrderService {
             products.add(product);
         });
         order.setItens(convertProductsToOrderItem(products));
+
+        if(updateOrderDTO.getPaymentMethod() != null){
+            order.setPaymentMethod(updateOrderDTO.getPaymentMethod());
+        }
+
+        if(updateOrderDTO.getTableName() != null){
+            order.setTableName(updateOrderDTO.getTableName());
+        }
+
+        if(updateOrderDTO.getObservations() != null){
+            order.setObservations(updateOrderDTO.getObservations());
+        }
 
         return orderRepository.save(order);
     }
@@ -69,6 +83,10 @@ public class OrderService {
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid UUID format: " + orderId, e);
         }
+    }
+
+    public List<OrderEntity> findAll() {
+        return orderRepository.findAllByActiveTrue();
     }
 
     public void deleteLogicallyByUuid(Double id) {

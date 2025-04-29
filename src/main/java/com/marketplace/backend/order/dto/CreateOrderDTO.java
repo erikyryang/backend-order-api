@@ -15,6 +15,7 @@ import java.util.List;
 public class CreateOrderDTO {
     private String tableName;
     private String observations;
+    private String paymentMethod;
     private List<ItemDTO> items;
 
     @Getter

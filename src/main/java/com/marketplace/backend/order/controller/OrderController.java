@@ -25,21 +25,19 @@ public class OrderController {
         return ResponseEntity.ok(orderService.create(createOrderDTO));
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<OrderEntity>> getOrders(
-            @RequestParam(defaultValue = "true") boolean retrieveAll,
-            @RequestParam(required = false) String orderId) {
-
-        return ResponseEntity.ok(orderService.findByOrderId(retrieveAll, orderId));
-    }
-
-    @GetMapping(path = "{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderEntity> getOrder(
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<OrderEntity> get(
             @RequestParam(defaultValue = "false") boolean retrieveAll,
             @PathVariable String id) {
 
         OrderEntity order = orderService.findByOrderId(retrieveAll, id).getFirst();
         return ResponseEntity.ok(order);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<OrderEntity>> getAll() {
+        List<OrderEntity> orders = orderService.findAll();
+        return ResponseEntity.ok(orders);
     }
 
     @PutMapping("/update/{id}")
