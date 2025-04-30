@@ -36,7 +36,8 @@ public class ProductEntity {
     private UUID categoryUuid;
 
     @Column(nullable = false)
-    private String imageUrl;
+    @Lob
+    private byte[] image;
 
     @Column(nullable = false)
     private Integer quantity;

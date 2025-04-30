@@ -2,7 +2,6 @@ package com.marketplace.backend.order.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.backend.order.dto.ProductCategoryDTO;
-import com.marketplace.backend.order.dto.ProductDTO;
 import com.marketplace.backend.order.dto.ProductUpdateDTO;
 import com.marketplace.backend.order.entity.CategoryEntity;
 import com.marketplace.backend.order.entity.ProductEntity;
@@ -96,8 +95,8 @@ public class ProductService {
             existingProduct.setCategoryUuid(category.getUuid());
             existingProduct.setCategoryName(category.getName());
         }
-        if (updatedProduct.getImageUrl() != null) {
-            existingProduct.setImageUrl(updatedProduct.getImageUrl());
+        if (updatedProduct.getImage() != null) {
+            existingProduct.setImage(updatedProduct.getImage());
         }
         if (updatedProduct.getQuantity() != null) {
             existingProduct.setQuantity(updatedProduct.getQuantity());

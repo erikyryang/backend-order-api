@@ -17,6 +17,6 @@ public class ProductUpdateDTO {
     private String description;
     private Double price;
     private String categoryName;
-    private String imageUrl;
+    private byte[] image;
     private Integer quantity;
 }
