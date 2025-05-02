@@ -1,5 +1,6 @@
 package com.marketplace.backend.order.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 public class OrderItemEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(updatable = false, nullable = false, unique = true)
+    @Column( nullable = false, unique = true)
     private UUID uuid;
 
     @Column(nullable = false)
@@ -31,6 +32,7 @@ public class OrderItemEntity {
     private boolean active = true;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private OrderEntity order;
 
 }

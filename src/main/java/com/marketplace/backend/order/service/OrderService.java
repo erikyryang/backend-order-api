@@ -50,7 +50,9 @@ public class OrderService {
             ProductEntity product = productService.findByUuid(UUID.fromString(item.getUuid()));
             products.add(product);
         });
-        order.setItens(convertProductsToOrderItem(products));
+        order.getItens().clear();
+        order.getItens().addAll(convertProductsToOrderItem(products));
+        order.setTotal(calculateItemsTotal(products));
 
         if(updateOrderDTO.getPaymentMethod() != null){
             order.setPaymentMethod(updateOrderDTO.getPaymentMethod());

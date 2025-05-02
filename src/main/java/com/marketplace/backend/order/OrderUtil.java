@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class OrderUtil {
     public static Double calculateItemsTotal(List<ProductEntity> products) {
         return products.stream()
-                .mapToDouble(item -> item.getPrice() * item.getQuantity())
+                .mapToDouble(item -> item.getPrice() * item.getQuantity()) // TODO: ta com bug
                 .sum();
     }
 
