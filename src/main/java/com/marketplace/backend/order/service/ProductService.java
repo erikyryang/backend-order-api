@@ -21,8 +21,8 @@ public class ProductService {
     private final CategoryService categoryService;
     private final ObjectMapper objectMapper;
 
-    public List<ProductEntity> findAll() {
-        return productRepository.findAll();
+    public List<ProductEntity> findAllByActiveTrue() {
+        return productRepository.findAllByActiveTrue();
     }
 
     public ProductEntity findByUuid(UUID uuid) {
@@ -51,7 +51,7 @@ public class ProductService {
     public ProductCategoryDTO findByCategory(boolean retrieveAll, String categoryUuid) {
         if (retrieveAll) {
             List<CategoryEntity> categories = categoryService.findAll();
-            List<ProductEntity> products = findAll();
+            List<ProductEntity> products = findAllByActiveTrue();
             return ProductCategoryDTO.builder().products(products).categories(categories).build();
         }
 

@@ -24,4 +24,6 @@ public interface ProductRepository  extends JpaRepository<ProductEntity, UUID> {
     @Transactional
     @Query("UPDATE ProductEntity p SET p.active = false WHERE p.uuid = :uuid AND p.active = true")
     void deleteLogicallyByUuid(UUID uuid);
+
+    List<ProductEntity> findAllByActiveTrue();
 }

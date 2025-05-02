@@ -35,7 +35,6 @@ public class ProductEntity {
     @Column(nullable = false)
     private UUID categoryUuid;
 
-    @Lob
     @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String image;
 

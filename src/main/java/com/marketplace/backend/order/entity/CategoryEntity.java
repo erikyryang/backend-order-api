@@ -22,4 +22,7 @@ public class CategoryEntity {
     @Column(nullable = false)
     private String name;
     private String description;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active = true;
 }
