@@ -86,11 +86,12 @@ public class UserService {
 
     public UserEntity login(String email, String password) {
         UserEntity user = userRepository.findByEmailAndActiveTrue(email)
-                .orElseThrow(() -> new RuntimeException("Invalid email or user not active"));
-        String hashedInputPassword = hashPassword(password, user.getSalt());
-        if (!hashedInputPassword.equals(user.getPassword())) {
-            throw new RuntimeException("Invalid password");
+                .orElseThrow(() -> new RuntimeException("Credenciais inválidas"));
+
+        if (!BCrypt.checkpw(password + user.getSalt(), user.getPassword())) {
+            throw new RuntimeException("Credenciais inválidas");
         }
+
         return user;
     }
 
