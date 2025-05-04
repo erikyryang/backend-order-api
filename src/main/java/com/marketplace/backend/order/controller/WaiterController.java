@@ -3,7 +3,7 @@ package com.marketplace.backend.order.controller;
 import com.marketplace.backend.order.entity.WaiterEntity;
 import com.marketplace.backend.order.service.WaiterService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/waiters")
+@RequiredArgsConstructor
+@RequestMapping("/waiter")
 public class WaiterController {
 
-    @Autowired
-    private WaiterService waiterService;
+    private final WaiterService waiterService;
 
     @PostMapping
     public ResponseEntity<WaiterEntity> create(@RequestBody WaiterEntity waiter) {

@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
 
 @RestController
 @RequestMapping("/product")
