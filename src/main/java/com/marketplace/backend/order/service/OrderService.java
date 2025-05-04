@@ -2,6 +2,7 @@ package com.marketplace.backend.order.service;
 
 import com.marketplace.backend.order.dto.CreateOrderDTO;
 import com.marketplace.backend.order.dto.UpdateOrderDTO;
+import com.marketplace.backend.order.dto.UpdateOrderStatusDTO;
 import com.marketplace.backend.order.entity.OrderEntity;
 import com.marketplace.backend.order.entity.ProductEntity;
 import com.marketplace.backend.order.enums.OrderStatus;
@@ -90,10 +91,16 @@ public class OrderService {
     }
 
     public List<OrderEntity> findAll() {
-        return orderRepository.findAllByActiveTrue();
+        return null;
     }
 
     public void deleteLogicallyByUuid(Double id) {
         orderRepository.deleteLogicallyByUuid(id);
+    }
+
+    public OrderEntity updateStatus(Double id, UpdateOrderStatusDTO statusOrderDTO) {
+        OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        order.setStatus(statusOrderDTO.getStatus());
+        return orderRepository.save(order);
     }
 }

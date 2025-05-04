@@ -29,6 +29,9 @@ public class OrderEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Double id;
 
+    @Column(unique = true, nullable = false)
+    private UUID uuid;
+
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
     @JsonManagedReference
     private List<OrderItemEntity> itens;
@@ -61,4 +64,10 @@ public class OrderEntity {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime updatedAt;
 
+    @PrePersist
+    private void generateUuid() {
+        if (this.uuid == null) {
+            this.uuid = UUID.randomUUID();
+        }
+    }
 }

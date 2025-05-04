@@ -41,7 +41,7 @@ public class OrderController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> updateOrderTicket(@PathVariable String id, @RequestBody UpdateOrderDTO updateOrderDTO) {
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody UpdateOrderDTO updateOrderDTO) {
         try {
             Double idConverted = Double.valueOf(id);
             OrderEntity updated = orderService.update(idConverted, updateOrderDTO);
@@ -55,7 +55,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteOrderTicket(@PathVariable String id) {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         try {
             Double idConverted = Double.valueOf(id);
             orderService.deleteLogicallyByUuid(idConverted);
@@ -67,23 +67,19 @@ public class OrderController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }
-//
-//    @GetMapping("/{uuid}")
-//    public ResponseEntity<?> getOrderTicket(@PathVariable UUID uuid) {
-//        try {
-//            OrderTicketResponseDTO orderTicket = orderService.findByUuid(uuid);
-//            return ResponseEntity.ok(orderTicket);
-//        } catch (IllegalArgumentException e) {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("error", "Invalid request");
-//            errorResponse.put("message", e.getMessage());
-//            return ResponseEntity.badRequest().body(errorResponse);
-//        }
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<List<OrderTicketResponseDTO>> getAllOrderTickets() {
-//        List<OrderTicketResponseDTO> orderTickets = orderService.findAll();
-//        return ResponseEntity.ok(orderTickets);
-//    }
+
+    @PutMapping("/update/status/{id}")
+    public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody UpdateOrderStatusDTO statusOrderDTO) {
+        try {
+            Double idConverted = Double.valueOf(id);
+            OrderEntity updated = orderService
+                    .updateStatus(idConverted, statusOrderDTO);
+            return ResponseEntity.ok(updated);
+        } catch (IllegalArgumentException e) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Invalid request");
+            errorResponse.put("message", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+    }
 }
