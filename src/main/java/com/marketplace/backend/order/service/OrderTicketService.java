@@ -1,19 +1,7 @@
 package com.marketplace.backend.order.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marketplace.backend.order.dto.OrderTicketResponseDTO;
-import com.marketplace.backend.order.dto.UpdateOrderTicketDTO;
-import com.marketplace.backend.order.entity.OrderTicketEntity;
-import com.marketplace.backend.order.entity.ProductEntity;
-import com.marketplace.backend.order.repository.OrderTicketRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

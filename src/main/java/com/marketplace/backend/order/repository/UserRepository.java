@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface UserRepository  extends JpaRepository<UserEntity, UUID> {
     @Modifying
     @Transactional
-    @Query("UPDATE OrderTicketEntity o SET o.active = false WHERE o.uuid = :uuid AND o.active = true")
+    @Query("UPDATE UserEntity o SET o.active = false WHERE o.uuid = :uuid AND o.active = true")
     int deleteLogicallyByUuid(UUID uuid);
 
     Optional<UserEntity> findByUuidAndActiveTrue(UUID uuid);
