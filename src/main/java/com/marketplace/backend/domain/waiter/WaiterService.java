@@ -12,8 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class WaiterService {
 
-    @Autowired
-    private WaiterRepository waiterRepository;
+    private final WaiterRepository waiterRepository;
 
     public WaiterEntity create(WaiterEntity waiter) {
         Optional<WaiterEntity> existingByEmail = waiterRepository.findByEmail(waiter.getEmail());
