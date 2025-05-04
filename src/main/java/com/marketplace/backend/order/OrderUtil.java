@@ -1,17 +1,17 @@
 package com.marketplace.backend.order;
 
+import com.marketplace.backend.order.dto.CreateOrderDTO;
 import com.marketplace.backend.order.entity.OrderItemEntity;
 import com.marketplace.backend.order.entity.ProductEntity;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class OrderUtil {
-    public static Double calculateItemsTotal(List<ProductEntity> products) {
-        return products.stream()
-                .mapToDouble(item -> item.getPrice() * item.getQuantity()) // TODO: ta com bug
+    public static Double calculateItemsTotal(List<CreateOrderDTO.ItemDTO> itens) {
+        return itens.stream()
+                .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();
     }
 

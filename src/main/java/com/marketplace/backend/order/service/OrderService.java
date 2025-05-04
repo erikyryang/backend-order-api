@@ -27,6 +27,7 @@ public class OrderService {
         List<ProductEntity> products = new ArrayList<>();
         createOrderDTO.getItems().forEach(item -> {
             ProductEntity product = productService.findByUuid(UUID.fromString(item.getUuid()));
+            item.setPrice(product.getPrice());
             products.add(product);
         });
 
@@ -37,7 +38,7 @@ public class OrderService {
                 .active(true)
                 .paymentMethod(createOrderDTO.getPaymentMethod())
                 .status(OrderStatus.PENDING)
-                .total(calculateItemsTotal(products))
+                .total(calculateItemsTotal(createOrderDTO.getItems()))
                 .build();
         return orderRepository.save(order);
     }
@@ -48,11 +49,12 @@ public class OrderService {
 
         updateOrderDTO.getItems().forEach(item -> {
             ProductEntity product = productService.findByUuid(UUID.fromString(item.getUuid()));
+            item.setPrice(product.getPrice());
             products.add(product);
         });
         order.getItens().clear();
         order.getItens().addAll(convertProductsToOrderItem(products));
-        order.setTotal(calculateItemsTotal(products));
+        order.setTotal(calculateItemsTotal(updateOrderDTO.getItems()));
 
         if(updateOrderDTO.getPaymentMethod() != null){
             order.setPaymentMethod(updateOrderDTO.getPaymentMethod());
