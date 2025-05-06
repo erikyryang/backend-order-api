@@ -32,7 +32,7 @@ public class OrderEntity {
     @Column(unique = true, nullable = false)
     private UUID uuid;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order", fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER, mappedBy = "order")
     private List<OrderItemEntity> itens;
 
     private String observations;

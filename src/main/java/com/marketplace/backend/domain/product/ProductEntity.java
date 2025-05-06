@@ -1,6 +1,7 @@
 package com.marketplace.backend.domain.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.marketplace.backend.domain.order.OrderEntity;
 import com.marketplace.backend.domain.order.OrderItemEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -47,12 +48,13 @@ public class ProductEntity {
     @Column(nullable = false)
     private String categoryName;
 
-    public OrderItemEntity toOrderItemEntity() {
+    public OrderItemEntity toOrderItemEntity(OrderEntity order) {
         OrderItemEntity orderItemEntity = new OrderItemEntity();
         orderItemEntity.setName(name);
         orderItemEntity.setActive(true);
         orderItemEntity.setQuantity(quantity);
         orderItemEntity.setPrice(price);
+        orderItemEntity.setOrder(order);
         return orderItemEntity;
     }
 }

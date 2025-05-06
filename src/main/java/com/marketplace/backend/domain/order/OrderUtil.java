@@ -13,14 +13,14 @@ public class OrderUtil {
                 .sum();
     }
 
-    public static List<OrderItemEntity> convertProductsToOrderItem(List<ProductEntity> products) {
+    public static List<OrderItemEntity> convertProductsToOrderItem(List<ProductEntity> products, OrderEntity order) {
         if (products == null || products.isEmpty()) {
             return Collections.emptyList();
         }
 
         return products.stream()
                 .filter(Objects::nonNull)
-                .map(ProductEntity::toOrderItemEntity)
+                .map( p -> p.toOrderItemEntity(order))
                 .filter(Objects::nonNull)
                 .toList();
     }

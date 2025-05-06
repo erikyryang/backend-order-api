@@ -30,13 +30,14 @@ public class OrderService {
 
         OrderEntity order = OrderEntity.builder()
                 .tableName(createOrderDTO.getTableName())
-                .itens(convertProductsToOrderItem(products))
                 .observations(createOrderDTO.getObservations())
                 .active(true)
                 .paymentMethod(createOrderDTO.getPaymentMethod())
                 .status(OrderStatus.PENDING)
                 .total(calculateItemsTotal(createOrderDTO.getItems()))
                 .build();
+
+        order.setItens(convertProductsToOrderItem(products,order));
         return orderRepository.save(order);
     }
 
@@ -50,7 +51,7 @@ public class OrderService {
             products.add(product);
         });
         order.getItens().clear();
-        order.getItens().addAll(convertProductsToOrderItem(products));
+        order.getItens().addAll(convertProductsToOrderItem(products, order));
         order.setTotal(calculateItemsTotal(updateOrderDTO.getItems()));
 
         if(updateOrderDTO.getPaymentMethod() != null){
