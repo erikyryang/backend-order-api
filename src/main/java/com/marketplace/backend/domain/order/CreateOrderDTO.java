@@ -15,6 +15,7 @@ public class CreateOrderDTO {
     private String tableName;
     private String observations;
     private String paymentMethod;
+    private String coupon;
     private List<ItemDTO> items;
 
     @Getter

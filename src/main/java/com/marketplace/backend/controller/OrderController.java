@@ -27,11 +27,9 @@ public class OrderController {
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<OrderEntity> get(
-            @RequestParam(defaultValue = "false") boolean retrieveAll,
-            @PathVariable String id) {
-
-        OrderEntity order = orderService.findByOrderId(retrieveAll, id).getFirst();
+    public ResponseEntity<OrderEntity> getById(@PathVariable("id") String id) {
+        Double idConverted = Double.valueOf(id);
+        OrderEntity order = orderService.findByOrderId(idConverted).getFirst();
         return ResponseEntity.ok(order);
     }
 

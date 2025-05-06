@@ -68,26 +68,21 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<OrderEntity> findByOrderId(boolean retrieveAll, String orderId) {
-        if (retrieveAll) {
-            return orderRepository.findAllByActiveTrue();
-        }
-
-        if (orderId == null || orderId.trim().isEmpty()) {
+    public List<OrderEntity> findByOrderId(Double id) {
+       if (id == null) {
             throw new IllegalArgumentException("Order UUID cannot be null or empty");
         }
 
         try {
-            Double id = Double.parseDouble(orderId);
             OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
             return List.of(order);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid UUID format: " + orderId, e);
+            throw new IllegalArgumentException("Invalid ID format: " + id, e);
         }
     }
 
     public List<OrderEntity> findAll() {
-        return null;
+        return orderRepository.findAllByActiveTrue();
     }
 
     public void deleteLogicallyByUuid(Double id) {

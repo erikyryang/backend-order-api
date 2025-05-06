@@ -27,7 +27,7 @@ public class CouponService {
         return coupon;
     }
 
-    public CouponEntity editCoupon(String code, CouponEntity updatedCoupon) {
+    public CouponEntity update(String code, CouponEntity updatedCoupon) {
         CouponEntity existingCoupon = couponRepository.findByCode(code).orElse(null);
         if (existingCoupon != null) {
             existingCoupon.setDiscountType(updatedCoupon.getDiscountType());

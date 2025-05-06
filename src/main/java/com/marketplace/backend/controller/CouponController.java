@@ -12,8 +12,8 @@ public class CouponController {
 
     private final CouponService couponService;
 
-    @PostMapping("/add")
-    public CouponEntity addCoupon(@RequestBody CouponEntity coupon) {
+    @PostMapping("/create")
+    public CouponEntity create(@RequestBody CouponEntity coupon) {
         return couponService.createCoupon(coupon);
     }
 
@@ -23,12 +23,12 @@ public class CouponController {
     }
 
     @PutMapping("/{code}")
-    public CouponEntity editCoupon(@PathVariable String code, @RequestBody CouponEntity coupon) {
-        return couponService.editCoupon(code, coupon);
+    public CouponEntity update(@PathVariable String code, @RequestBody CouponEntity coupon) {
+        return couponService.update(code, coupon);
     }
 
     @PatchMapping("/{code}/deactivate")
-    public CouponEntity deactivateCoupon(@PathVariable String code) {
+    public CouponEntity deactivate(@PathVariable String code) {
         return couponService.deactivateCoupon(code);
     }
 }
