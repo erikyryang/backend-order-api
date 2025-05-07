@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class OrderUtil {
-    public static Double calculateItemsTotal(List<CreateOrderDTO.ItemDTO> itens) {
+    public static Double calculateItemsTotal(List<OrderDTO.ItemDTO> itens) {
         return itens.stream()
                 .mapToDouble(item -> item.getPrice() * item.getQuantity())
                 .sum();

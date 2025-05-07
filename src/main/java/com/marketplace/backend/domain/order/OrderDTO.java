@@ -11,12 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class UpdateOrderDTO {
+public class OrderDTO {
     private String tableName;
     private String observations;
     private String paymentMethod;
     private String coupon;
-    private List<CreateOrderDTO.ItemDTO> items;
+    private List<ItemDTO> items;
 
     @Getter
     @Setter

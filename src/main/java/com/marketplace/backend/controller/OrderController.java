@@ -1,7 +1,6 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.order.CreateOrderDTO;
-import com.marketplace.backend.domain.order.UpdateOrderDTO;
+import com.marketplace.backend.domain.order.OrderDTO;
 import com.marketplace.backend.domain.order.UpdateOrderStatusDTO;
 import com.marketplace.backend.domain.order.OrderEntity;
 import com.marketplace.backend.domain.order.OrderService;
@@ -22,8 +21,8 @@ public class OrderController {
     public final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody CreateOrderDTO createOrderDTO) {
-        return ResponseEntity.ok(orderService.create(createOrderDTO));
+    public ResponseEntity<?> create(@RequestBody OrderDTO orderDTO) {
+        return ResponseEntity.ok(orderService.create(orderDTO));
     }
 
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -40,10 +39,10 @@ public class OrderController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<?> update(@PathVariable String id, @RequestBody UpdateOrderDTO updateOrderDTO) {
+    public ResponseEntity<?> update(@PathVariable String id, @RequestBody OrderDTO orderDTO) {
         try {
             Double idConverted = Double.valueOf(id);
-            OrderEntity updated = orderService.update(idConverted, updateOrderDTO);
+            OrderEntity updated = orderService.update(idConverted, orderDTO);
             return ResponseEntity.ok(updated);
         } catch (IllegalArgumentException e) {
             Map<String, String> errorResponse = new HashMap<>();

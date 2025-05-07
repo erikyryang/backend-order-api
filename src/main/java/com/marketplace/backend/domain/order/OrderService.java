@@ -19,51 +19,62 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductService productService;
+    private final CouponService couponService;
 
-    public OrderEntity create(CreateOrderDTO createOrderDTO) {
+    public OrderEntity create(OrderDTO orderDTO) {
         List<ProductEntity> products = new ArrayList<>();
-        createOrderDTO.getItems().forEach(item -> {
+        orderDTO.getItems().forEach(item -> {
             ProductEntity product = productService.findByUuid(UUID.fromString(item.getUuid()));
             item.setPrice(product.getPrice());
             products.add(product);
         });
 
+        var totalValue = calculateItemsTotal(orderDTO.getItems());
+        if(orderDTO.getCoupon() != null && !orderDTO.getCoupon().isBlank()) {
+            totalValue = couponService.applyCoupon(orderDTO.getCoupon(), totalValue);
+        }
+
         OrderEntity order = OrderEntity.builder()
-                .tableName(createOrderDTO.getTableName())
-                .observations(createOrderDTO.getObservations())
+                .tableName(orderDTO.getTableName())
+                .observations(orderDTO.getObservations())
                 .active(true)
-                .paymentMethod(createOrderDTO.getPaymentMethod())
+                .paymentMethod(orderDTO.getPaymentMethod())
                 .status(OrderStatus.PENDING)
-                .total(calculateItemsTotal(createOrderDTO.getItems()))
+                .total(totalValue)
                 .build();
 
-        order.setItens(convertProductsToOrderItem(products,order));
+        order.setItens(convertProductsToOrderItem(products, order));
         return orderRepository.save(order);
     }
 
-    public OrderEntity update(Double id, UpdateOrderDTO updateOrderDTO) {
+    public OrderEntity update(Double id, OrderDTO orderDTO) {
         OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
         List<ProductEntity> products = new ArrayList<>();
 
-        updateOrderDTO.getItems().forEach(item -> {
+        orderDTO.getItems().forEach(item -> {
             ProductEntity product = productService.findByUuid(UUID.fromString(item.getUuid()));
             item.setPrice(product.getPrice());
             products.add(product);
         });
         order.getItens().clear();
         order.getItens().addAll(convertProductsToOrderItem(products, order));
-        order.setTotal(calculateItemsTotal(updateOrderDTO.getItems()));
 
-        if(updateOrderDTO.getPaymentMethod() != null){
-            order.setPaymentMethod(updateOrderDTO.getPaymentMethod());
+        var totalValue = calculateItemsTotal(orderDTO.getItems());
+        if(orderDTO.getCoupon() != null && !orderDTO.getCoupon().isBlank()) {
+            totalValue = couponService.applyCoupon(orderDTO.getCoupon(), totalValue);
+        }
+        order.setTotal(calculateItemsTotal(orderDTO.getItems()));
+
+        if(orderDTO.getPaymentMethod() != null){
+            order.setPaymentMethod(orderDTO.getPaymentMethod());
         }
 
-        if(updateOrderDTO.getTableName() != null){
-            order.setTableName(updateOrderDTO.getTableName());
+        if(orderDTO.getTableName() != null){
+            order.setTableName(orderDTO.getTableName());
         }
 
-        if(updateOrderDTO.getObservations() != null){
-            order.setObservations(updateOrderDTO.getObservations());
+        if(orderDTO.getObservations() != null){
+            order.setObservations(orderDTO.getObservations());
         }
 
         return orderRepository.save(order);

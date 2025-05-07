@@ -1,6 +1,7 @@
 package com.marketplace.backend.domain.order;
 
 import com.marketplace.backend.domain.order.enums.CouponStatus;
+import com.marketplace.backend.domain.order.enums.DiscountEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class CouponEntity {
     private Double id;
 
     private String code;
-    private String discountType;
+    @Enumerated(EnumType.STRING)
+    private DiscountEnum discountType;
     private double discountAmount;
     private boolean active;
     private LocalDateTime expirationTime;
