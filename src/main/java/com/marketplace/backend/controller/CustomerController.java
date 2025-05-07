@@ -1,8 +1,8 @@
 package com.marketplace.backend.controller;
 
 import com.marketplace.backend.domain.customer.CustomerService;
-import com.marketplace.backend.domain.customer.LoginDTO;
-import com.marketplace.backend.domain.customer.entity.CustomerEntity;
+import com.marketplace.backend.domain.customer.dto.CustomerDTO;
+import com.marketplace.backend.domain.customer.dto.LoginDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,53 +28,53 @@ public class CustomerController {
     @Operation(summary = "Register a new customer", description = "Creates a new customer with the provided details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customer registered successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerEntity.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class))),
             @ApiResponse(responseCode = "400", description = "Invalid customer data provided", content = @Content)
     })
     @PostMapping("/register")
-    public ResponseEntity<CustomerEntity> create(@RequestBody CustomerEntity customer) {
-        CustomerEntity createdCustomer = customerService.create(customer);
+    public ResponseEntity<CustomerDTO> create(@RequestBody CustomerDTO customer) {
+        CustomerDTO createdCustomer = customerService.create(customer);
         return ResponseEntity.ok(createdCustomer);
     }
 
     @Operation(summary = "Retrieve all customers", description = "Fetches a list of all registered customers")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customers retrieved successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerEntity.class)))
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class)))
     })
     @GetMapping
-    public ResponseEntity<List<CustomerEntity>> getAllCustomers() {
-        List<CustomerEntity> customers = customerService.getAllCustomers();
+    public ResponseEntity<List<CustomerDTO>> getAllCustomers() {
+        List<CustomerDTO> customers = customerService.getAllCustomers();
         return ResponseEntity.ok(customers);
     }
 
     @Operation(summary = "Retrieve a customer by UUID", description = "Fetches a customer using their unique UUID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customer retrieved successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerEntity.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class))),
             @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content)
     })
     @GetMapping("/{uuid}")
-    public ResponseEntity<CustomerEntity> getById(
+    public ResponseEntity<CustomerDTO> getById(
             @Parameter(description = "UUID of the customer", required = true) @PathVariable String uuid) {
         UUID uuidConverted = UUID.fromString(uuid);
-        CustomerEntity customer = customerService.getByUuid(uuidConverted);
+        CustomerDTO customer = customerService.getByUuid(uuidConverted);
         return ResponseEntity.ok(customer);
     }
 
     @Operation(summary = "Update a customer", description = "Updates an existing customer identified by their UUID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customer updated successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerEntity.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class))),
             @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content),
             @ApiResponse(responseCode = "400", description = "Invalid customer data provided", content = @Content)
     })
     @PutMapping("/{uuid}")
-    public ResponseEntity<CustomerEntity> update(
+    public ResponseEntity<CustomerDTO> update(
             @Parameter(description = "UUID of the customer", required = true) @PathVariable String uuid,
-            @RequestBody CustomerEntity userDetails) {
+            @RequestBody CustomerDTO userDetails) {
         UUID userUuid = UUID.fromString(uuid);
-        CustomerEntity updatedUser = customerService.update(userUuid, userDetails);
+        CustomerDTO updatedUser = customerService.update(userUuid, userDetails);
         return ResponseEntity.ok(updatedUser);
     }
 
@@ -109,12 +109,12 @@ public class CustomerController {
     @Operation(summary = "Customer login", description = "Authenticates a customer using email and password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customer authenticated successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerEntity.class))),
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class))),
             @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content)
     })
     @PostMapping("/login")
-    public ResponseEntity<CustomerEntity> login(@RequestBody LoginDTO loginRequest) {
-        CustomerEntity customer = customerService.login(loginRequest.getEmail(), loginRequest.getPassword());
+    public ResponseEntity<CustomerDTO> login(@RequestBody LoginDTO loginRequest) {
+        CustomerDTO customer = customerService.login(loginRequest.getEmail(), loginRequest.getPassword());
         return ResponseEntity.ok(customer);
     }
 }

@@ -1,5 +1,7 @@
 package com.marketplace.backend.domain.customer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.domain.customer.dto.CustomerDTO;
 import com.marketplace.backend.domain.customer.entity.CustomerEntity;
 import com.marketplace.backend.domain.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final ObjectMapper objectMapper;
 
     private static final int SALT_LENGTH = 16;
 
@@ -33,7 +36,8 @@ public class CustomerService {
         return BCrypt.hashpw(password + salt, BCrypt.gensalt());
     }
 
-    public CustomerEntity create(CustomerEntity customer) {
+    public CustomerDTO create(CustomerDTO customerRequest) {
+        CustomerEntity customer = objectMapper.convertValue(customerRequest, CustomerEntity.class);
         if (customerRepository.findByEmailAndActiveTrue(customer.getEmail()).isPresent()) {
             throw new RuntimeException("Email already exists");
         }
@@ -44,31 +48,39 @@ public class CustomerService {
         customer.setSalt(salt);
         customer.setPassword(hashedPassword);
 
-        return customerRepository.save(customer);
+        CustomerEntity customerResult = customerRepository.save(customer);
+        return objectMapper.convertValue(customerResult, CustomerDTO.class);
     }
 
-    public List<CustomerEntity> getAllCustomers() {
-        return customerRepository.findAllByActiveTrue();
+    public List<CustomerDTO> getAllCustomers() {
+        List<CustomerEntity> customers = customerRepository.findAllByActiveTrue();
+        return customers.stream().map(
+                customer -> objectMapper.convertValue(customer, CustomerDTO.class)).toList();
     }
 
-    public CustomerEntity getByUuid(UUID uuid) {
-        return customerRepository.findByUuidAndActiveTrue(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+    public CustomerDTO getByUuid(UUID uuid) {
+        CustomerEntity customer = customerRepository.findByUuidAndActiveTrue(uuid).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
+        return objectMapper.convertValue(customer, CustomerDTO.class);
     }
 
-    public CustomerEntity update(UUID uuid, CustomerEntity customerDetails) {
-        CustomerEntity customer = customerRepository.findById(uuid)
+    public CustomerDTO update(UUID uuid, CustomerDTO customerRequest) {
+        CustomerEntity customer = objectMapper.convertValue(customerRequest, CustomerEntity.class);
+        CustomerEntity currentCustomer = customerRepository.findById(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer not found"));
-        customer.setName(customer.getName());
-        customer.setEmail(customer.getEmail());
-        customer.setPhone(customer.getPhone());
-        customer.setAddresses(customer.getAddresses());
-        if (customerDetails.getPassword() != null && !customer.getPassword().equals(customerDetails.getPassword())) {
+        currentCustomer.setName(customer.getName());
+        currentCustomer.setEmail(customer.getEmail());
+        currentCustomer.setPhone(customer.getPhone());
+        currentCustomer.setAddresses(customer.getAddresses());
+        if (customer.getPassword() != null
+                && !customer.getPassword().equals(currentCustomer.getPassword())) {
             String salt = generateSalt();
             String hashedPassword = hashPassword(customer.getPassword(), salt);
             customer.setSalt(salt);
             customer.setPassword(hashedPassword);
         }
-        return customerRepository.save(customer);
+        CustomerEntity customerResult = customerRepository.save(customer);
+        return objectMapper.convertValue(customerResult, CustomerDTO.class);
     }
 
     public void delete(UUID uuid) {
@@ -85,14 +97,12 @@ public class CustomerService {
         return hashedInputPassword.equals(customer.getPassword());
     }
 
-    public CustomerEntity login(String email, String password) {
+    public CustomerDTO login(String email, String password) {
         CustomerEntity customer = customerRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password"));
-
         if (!BCrypt.checkpw(password + customer.getSalt(), customer.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
         }
-        return customer;
+        return objectMapper.convertValue(customer, CustomerDTO.class);
     }
-
 }
