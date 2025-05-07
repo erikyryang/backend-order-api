@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.order;
+package com.marketplace.backend.domain.order.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,8 +1,8 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.order.OrderDTO;
-import com.marketplace.backend.domain.order.UpdateOrderStatusDTO;
-import com.marketplace.backend.domain.order.OrderEntity;
+import com.marketplace.backend.domain.order.dto.OrderDTO;
+import com.marketplace.backend.domain.order.dto.UpdateOrderStatusDTO;
+import com.marketplace.backend.domain.order.entity.OrderEntity;
 import com.marketplace.backend.domain.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

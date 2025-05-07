@@ -1,8 +1,8 @@
 package com.marketplace.backend.domain.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.marketplace.backend.domain.order.OrderEntity;
-import com.marketplace.backend.domain.order.OrderItemEntity;
+import com.marketplace.backend.domain.order.entity.OrderEntity;
+import com.marketplace.backend.domain.order.entity.OrderItemEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

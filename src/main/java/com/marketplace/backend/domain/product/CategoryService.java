@@ -15,7 +15,7 @@ public class CategoryService {
 
 
     public List<CategoryEntity> findAll() {
-        return categoryRepository.findAll();
+        return categoryRepository.findAllByActiveTrue();
     }
 
     public CategoryEntity findByCategoryUuid(UUID categoryUuid) {

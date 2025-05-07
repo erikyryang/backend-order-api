@@ -1,7 +1,9 @@
 package com.marketplace.backend.domain.order;
 
+import com.marketplace.backend.domain.order.entity.CouponEntity;
 import com.marketplace.backend.domain.order.enums.CouponStatus;
 import com.marketplace.backend.domain.order.enums.DiscountEnum;
+import com.marketplace.backend.domain.order.repository.CouponRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

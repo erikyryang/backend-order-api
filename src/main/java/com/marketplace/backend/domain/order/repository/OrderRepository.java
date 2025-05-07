@@ -1,5 +1,6 @@
-package com.marketplace.backend.domain.order;
+package com.marketplace.backend.domain.order.repository;
 
+import com.marketplace.backend.domain.order.entity.OrderEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

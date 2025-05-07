@@ -1,7 +1,6 @@
-package com.marketplace.backend.domain.order;
+package com.marketplace.backend.domain.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -40,6 +39,8 @@ public class OrderEntity {
     private String paymentMethod;
 
     private String tableName;
+
+    private String couponCode;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

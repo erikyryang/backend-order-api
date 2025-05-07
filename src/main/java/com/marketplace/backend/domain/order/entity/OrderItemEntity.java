@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.order;
+package com.marketplace.backend.domain.order.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

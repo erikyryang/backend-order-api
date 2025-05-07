@@ -1,5 +1,9 @@
 package com.marketplace.backend.domain.order;
 
+import com.marketplace.backend.domain.order.dto.OrderDTO;
+import com.marketplace.backend.domain.order.dto.UpdateOrderStatusDTO;
+import com.marketplace.backend.domain.order.entity.OrderEntity;
+import com.marketplace.backend.domain.order.repository.OrderRepository;
 import com.marketplace.backend.domain.product.ProductService;
 import com.marketplace.backend.domain.product.ProductEntity;
 import com.marketplace.backend.domain.order.enums.OrderStatus;
@@ -12,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.marketplace.backend.domain.order.OrderUtil.calculateItemsTotal;
-import static com.marketplace.backend.domain.order.OrderUtil.convertProductsToOrderItem;
+import static com.marketplace.backend.util.OrderUtil.calculateItemsTotal;
+import static com.marketplace.backend.util.OrderUtil.convertProductsToOrderItem;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +46,7 @@ public class OrderService {
                 .active(true)
                 .paymentMethod(orderDTO.getPaymentMethod())
                 .status(OrderStatus.PENDING)
+                .couponCode(orderDTO.getCoupon())
                 .total(totalValue)
                 .build();
 
@@ -50,7 +55,9 @@ public class OrderService {
     }
 
     public OrderEntity update(Double id, OrderDTO orderDTO) {
-        OrderEntity order = orderRepository.findByActiveTrueAndId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: " + id));
+        OrderEntity order = orderRepository.findByActiveTrueAndId(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: " + id));
+
         List<ProductEntity> products = new ArrayList<>();
 
         orderDTO.getItems().forEach(item -> {

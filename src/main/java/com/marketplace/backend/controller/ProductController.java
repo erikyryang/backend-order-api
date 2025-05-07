@@ -1,9 +1,6 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.product.ProductCategoryDTO;
-import com.marketplace.backend.domain.product.ProductUpdateDTO;
-import com.marketplace.backend.domain.product.ProductEntity;
-import com.marketplace.backend.domain.product.ProductService;
+import com.marketplace.backend.domain.product.*;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,18 +19,21 @@ public class ProductController {
 
     private final ProductService productService;
 
-
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ProductCategoryDTO> getByCategory(
-            @RequestParam(defaultValue = "true") boolean retrieveAll,
-            @RequestParam(required = false) String categoryUuid) {
-
-        ProductCategoryDTO products = productService.findByCategory(retrieveAll, categoryUuid);
+    public ResponseEntity<ProductCategoryDTO> findAll() {
+        ProductCategoryDTO products = productService.findAll();
         return ResponseEntity.ok(products);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<ProductEntity>> searchByName(@RequestParam String name) {
+    @GetMapping(value = "/category/{uuid}",produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<ProductDTO>> findByCategoryUuid(@PathVariable String uuid) {
+        UUID uuidConverted = UUID.fromString(uuid);
+        List<ProductDTO> products = productService.findAllByCategoryUuid(uuidConverted);
+        return ResponseEntity.ok(products);
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<ProductEntity>> findByName(@PathVariable String name) {
         List<ProductEntity> products = productService.findByName(name);
         return ResponseEntity.ok(products);
     }

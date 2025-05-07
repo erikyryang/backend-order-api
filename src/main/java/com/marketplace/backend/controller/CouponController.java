@@ -1,6 +1,6 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.order.CouponEntity;
+import com.marketplace.backend.domain.order.entity.CouponEntity;
 import com.marketplace.backend.domain.order.CouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

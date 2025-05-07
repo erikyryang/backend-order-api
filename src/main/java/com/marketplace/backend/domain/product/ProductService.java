@@ -3,7 +3,9 @@ package com.marketplace.backend.domain.product;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,10 +26,6 @@ public class ProductService {
         return productRepository.findByUuid(uuid).orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
-    public List<ProductEntity> findAllByCategoryUuid(UUID categoryUuid) {
-        return productRepository.findAllByCategoryUuidAndActiveTrue(categoryUuid);
-    }
-
     public List<ProductEntity> findByNameContainingIgnoreCase(String trim) {
         return productRepository.findByNameContainingIgnoreCase(trim);
     }
@@ -43,29 +41,20 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public ProductCategoryDTO findByCategory(boolean retrieveAll, String categoryUuid) {
-        if (retrieveAll) {
-            List<CategoryEntity> categories = categoryService.findAll();
-            List<ProductEntity> products = findAllByActiveTrue();
-            return ProductCategoryDTO.builder().products(products).categories(categories).build();
-        }
+    public ProductCategoryDTO findAll() {
+        List<CategoryEntity> categories = categoryService.findAll();
+        List<ProductEntity> products = findAllByActiveTrue();
+        return ProductCategoryDTO.builder().products(products).categories(categories).build();
+    }
 
-        if (categoryUuid == null || categoryUuid.trim().isEmpty()) {
-            throw new IllegalArgumentException("Category UUID cannot be null or empty");
-        }
-
-        try {
-            UUID uuid = UUID.fromString(categoryUuid);
-            List<ProductEntity> products = findAllByCategoryUuid(uuid);
-            return ProductCategoryDTO.builder().products(products).build();
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid UUID format: " + categoryUuid, e);
-        }
+    public List<ProductDTO> findAllByCategoryUuid(UUID categoryUuid) {
+        List<ProductEntity> products = productRepository.findAllByCategoryUuidAndActiveTrue(categoryUuid);
+        return products.stream().map(p -> objectMapper.convertValue(p, ProductDTO.class)).toList();
     }
 
     public List<ProductEntity> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Product name cannot be null or empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product name cannot be null or empty");
         }
         return findByNameContainingIgnoreCase(name.trim());
     }
@@ -73,7 +62,7 @@ public class ProductService {
     public ProductEntity update(UUID uuid, ProductUpdateDTO updatedProduct) {
         ProductEntity existingProduct = findByUuid(uuid);
         if (existingProduct == null) {
-            throw new IllegalArgumentException("Product not found with UUID: " + uuid);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ("Product not found with UUID: " + uuid));
         }
 
         if (updatedProduct.getName() != null) {

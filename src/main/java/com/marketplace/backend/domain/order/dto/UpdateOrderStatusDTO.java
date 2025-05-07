@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.order;
+package com.marketplace.backend.domain.order.dto;
 
 import com.marketplace.backend.domain.order.enums.OrderStatus;
 import jakarta.persistence.EnumType;
