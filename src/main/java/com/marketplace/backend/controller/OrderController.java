@@ -38,7 +38,7 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody OrderDTO orderDTO) {
         try {
             Double idConverted = Double.valueOf(id);
