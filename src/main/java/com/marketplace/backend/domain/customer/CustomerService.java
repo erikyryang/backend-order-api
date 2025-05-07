@@ -39,7 +39,7 @@ public class CustomerService {
     public CustomerDTO create(CustomerDTO customerRequest) {
         CustomerEntity customer = objectMapper.convertValue(customerRequest, CustomerEntity.class);
         if (customerRepository.findByEmailAndActiveTrue(customer.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
 
         String salt = generateSalt();

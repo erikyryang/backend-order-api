@@ -91,21 +91,6 @@ public class CustomerController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Validate customer password", description = "Validates the password for a customer identified by their UUID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Password validation result",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Boolean.class))),
-            @ApiResponse(responseCode = "404", description = "Customer not found", content = @Content)
-    })
-    @PostMapping("/{uuid}/validate-password")
-    public ResponseEntity<Boolean> validatePassword(
-            @Parameter(description = "UUID of the customer", required = true) @PathVariable String uuid,
-            @RequestBody String password) {
-        UUID uuidConverted = UUID.fromString(uuid);
-        boolean isValid = customerService.validatePassword(uuidConverted, password);
-        return ResponseEntity.ok(isValid);
-    }
-
     @Operation(summary = "Customer login", description = "Authenticates a customer using email and password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Customer authenticated successfully",

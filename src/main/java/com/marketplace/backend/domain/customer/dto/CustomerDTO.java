@@ -1,5 +1,6 @@
 package com.marketplace.backend.domain.customer.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marketplace.backend.domain.address.AddressDTO;
 import jakarta.annotation.Nullable;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class CustomerDTO {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private String phone;

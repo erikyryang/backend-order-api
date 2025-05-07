@@ -1,5 +1,6 @@
 package com.marketplace.backend.domain.address;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +19,6 @@ public class AddressDTO {
 
     private String zipcode;
 
+    @JsonProperty("isDefault")
     private boolean isDefault;
 }
