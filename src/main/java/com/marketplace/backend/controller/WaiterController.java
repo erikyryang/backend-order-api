@@ -2,6 +2,13 @@ package com.marketplace.backend.controller;
 
 import com.marketplace.backend.domain.waiter.WaiterEntity;
 import com.marketplace.backend.domain.waiter.WaiterService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "Waiter Management", description = "APIs for managing waiters")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/waiter")
@@ -17,33 +25,66 @@ public class WaiterController {
 
     private final WaiterService waiterService;
 
+    @Operation(summary = "Create a new waiter", description = "Creates a new waiter with the provided details")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Waiter created successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = WaiterEntity.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid waiter data provided", content = @Content)
+    })
     @PostMapping
     public ResponseEntity<WaiterEntity> create(@RequestBody WaiterEntity waiter) {
         WaiterEntity createdWaiter = waiterService.create(waiter);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdWaiter);
     }
 
+    @Operation(summary = "Retrieve all waiters", description = "Fetches a list of all registered waiters")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Waiters retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = WaiterEntity.class)))
+    })
     @GetMapping
     public ResponseEntity<List<WaiterEntity>> getAllWaiters() {
         List<WaiterEntity> waiters = waiterService.getAllWaiters();
-        return new ResponseEntity<>(waiters, HttpStatus.OK);
+        return ResponseEntity.ok(waiters);
     }
 
+    @Operation(summary = "Retrieve a waiter by ID", description = "Fetches a waiter using their unique ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Waiter retrieved successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = WaiterEntity.class))),
+            @ApiResponse(responseCode = "404", description = "Waiter not found", content = @Content)
+    })
     @GetMapping("/{id}")
-    public ResponseEntity<WaiterEntity> getById(@PathVariable Long id) {
+    public ResponseEntity<WaiterEntity> getById(
+            @Parameter(description = "ID of the waiter", required = true) @PathVariable Long id) {
         WaiterEntity waiter = waiterService.getWaiterById(id);
-        return new ResponseEntity<>(waiter, HttpStatus.OK);
+        return ResponseEntity.ok(waiter);
     }
 
+    @Operation(summary = "Update a waiter", description = "Updates an existing waiter identified by their ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Waiter updated successfully",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = WaiterEntity.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid waiter data provided", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Waiter not found", content = @Content)
+    })
     @PutMapping("/{id}")
-    public ResponseEntity<WaiterEntity> update(@PathVariable Long id, @Valid @RequestBody WaiterEntity waiter) {
+    public ResponseEntity<WaiterEntity> update(
+            @Parameter(description = "ID of the waiter", required = true) @PathVariable Long id,
+            @Valid @RequestBody WaiterEntity waiter) {
         WaiterEntity updatedWaiter = waiterService.update(id, waiter);
-        return new ResponseEntity<>(updatedWaiter, HttpStatus.OK);
+        return ResponseEntity.ok(updatedWaiter);
     }
 
+    @Operation(summary = "Delete a waiter", description = "Deletes a waiter identified by their ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Waiter deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Waiter not found", content = @Content)
+    })
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(
+            @Parameter(description = "ID of the waiter", required = true) @PathVariable Long id) {
         waiterService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 }

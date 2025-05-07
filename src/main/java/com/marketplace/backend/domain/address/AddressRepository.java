@@ -1,6 +1,5 @@
-package com.marketplace.backend.domain.customer.repository;
+package com.marketplace.backend.domain.address;
 
-import com.marketplace.backend.domain.customer.entity.AddressEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

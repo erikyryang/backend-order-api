@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.customer.entity;
+package com.marketplace.backend.domain.establishment.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marketplace.backend.domain.address.AddressEntity;
@@ -16,8 +16,8 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "customer_tbl")
-public class CustomerEntity {
+@Table(name = "establishment_tbl")
+public class EstablishmentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
@@ -42,7 +42,7 @@ public class CustomerEntity {
     private boolean active = true;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "establishment_id")
     private List<AddressEntity> addresses;
 
 }
