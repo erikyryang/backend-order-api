@@ -1,7 +1,9 @@
 package com.marketplace.backend.domain.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.domain.address.AddressDTO;
 import com.marketplace.backend.domain.address.AddressEntity;
+import com.marketplace.backend.domain.address.AddressRepository;
 import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
 import com.marketplace.backend.domain.order.dto.OrderDTO;
 import com.marketplace.backend.domain.order.dto.UpdateOrderStatusDTO;
@@ -32,6 +34,7 @@ public class OrderService {
     private final WaiterService waiterService;
     private final CouponService couponService;
     private final ObjectMapper objectMapper;
+    private final AddressRepository addressRepository;
 
     public OrderEntity create(OrderDTO orderDTO) {
         List<ProductEntity> products = new ArrayList<>();
@@ -48,10 +51,11 @@ public class OrderService {
 
         if(orderDTO.getWaiterId() != null && !orderDTO.getWaiterId().isBlank()) {
             waiterService.getByEmployeeId(orderDTO.getWaiterId());
+        } else {
+            checkAddress(orderDTO.getAddress());
         }
 
         OrderEntity order = objectMapper.convertValue(orderDTO, OrderEntity.class);
-
         order = order.builder()
                 .status(OrderStatus.PENDING)
                 .total(totalValue)
@@ -59,6 +63,12 @@ public class OrderService {
 
         order.setItens(convertProductsToOrderItem(products, order));
         return orderRepository.save(order);
+    }
+
+    private void checkAddress(AddressDTO address) {
+        UUID uuid = UUID.fromString(address.getUuid());
+        addressRepository.findById(uuid).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Address not found"));
     }
 
     public OrderEntity update(Double id, OrderDTO orderDTO) {

@@ -7,6 +7,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressDTO {
+
+    private String uuid;
+
     private String street;
 
     private String number;
