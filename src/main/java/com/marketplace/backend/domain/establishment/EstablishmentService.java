@@ -4,13 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.backend.domain.establishment.dto.EstablishmentDTO;
 import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
 import com.marketplace.backend.domain.establishment.repository.EstablishmentRepository;
+import com.marketplace.backend.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import java.security.SecureRandom;
-import java.util.Base64;
-import java.util.List;
 
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.web.server.ResponseStatusException;
@@ -24,27 +21,14 @@ public class EstablishmentService {
     private final EstablishmentRepository establishmentRepository;
     private final ObjectMapper objectMapper;
 
-    private static final int SALT_LENGTH = 16;
-
-    private String generateSalt() {
-        byte[] salt = new byte[SALT_LENGTH];
-        new SecureRandom().nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
-    }
-
-    private String hashPassword(String password, String salt) {
-        return BCrypt.hashpw(password + salt, BCrypt.gensalt());
-    }
-
     public EstablishmentDTO create(EstablishmentDTO establishmentRequest) {
         EstablishmentEntity establishment = objectMapper.convertValue(establishmentRequest, EstablishmentEntity.class);
         if (establishmentRepository.findByEmailAndActiveTrue(establishment.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
 
-        String salt = generateSalt();
-        String hashedPassword = hashPassword(establishment.getPassword(), salt);
-
+        String salt = PasswordUtil.generateSalt();
+        String hashedPassword = PasswordUtil.hashPassword(establishment.getPassword(), salt);
         establishment.setSalt(salt);
         establishment.setPassword(hashedPassword);
 
@@ -68,8 +52,8 @@ public class EstablishmentService {
         currentEstablishment.setAddresses(establishment.getAddresses());
         if (establishment.getPassword() != null
                 && !establishment.getPassword().equals(currentEstablishment.getPassword())) {
-            String salt = generateSalt();
-            String hashedPassword = hashPassword(establishment.getPassword(), salt);
+            String salt = PasswordUtil.generateSalt();
+            String hashedPassword = PasswordUtil.hashPassword(establishment.getPassword(), salt);
             establishment.setSalt(salt);
             establishment.setPassword(hashedPassword);
         }

@@ -1,6 +1,7 @@
 package com.marketplace.backend.domain.waiter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,8 @@ import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
+import static com.marketplace.backend.util.PasswordUtil.hashPassword;
+
 @Service
 @RequiredArgsConstructor
 public class WaiterService {
@@ -20,25 +23,13 @@ public class WaiterService {
     private final WaiterRepository waiterRepository;
     private final ObjectMapper objectMapper;
 
-    private static final int SALT_LENGTH = 16;
-
-    private String generateSalt() {
-        byte[] salt = new byte[SALT_LENGTH];
-        new SecureRandom().nextBytes(salt);
-        return Base64.getEncoder().encodeToString(salt);
-    }
-
-    private String hashPassword(String password, String salt) {
-        return BCrypt.hashpw(password + salt, BCrypt.gensalt());
-    }
-
     public WaiterDTO create(WaiterDTO waiterRequest) {
         WaiterEntity waiter = objectMapper.convertValue(waiterRequest, WaiterEntity.class);
         if (waiterRepository.findByEmailAndActiveTrue(waiter.getEmail()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
 
-        String salt = generateSalt();
+        String salt = PasswordUtil.generateSalt();
         String hashedPassword = hashPassword(waiter.getPassword(), salt);
 
         waiter.setSalt(salt);
@@ -61,22 +52,22 @@ public class WaiterService {
     }
 
     public WaiterDTO update(UUID uuid, WaiterDTO waiterRequest) {
-        WaiterEntity establishment = objectMapper.convertValue(waiterRequest, WaiterEntity.class);
+        WaiterEntity waiter = objectMapper.convertValue(waiterRequest, WaiterEntity.class);
         WaiterEntity currentWaiter = waiterRepository.findById(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Waiter not found"));
-        currentWaiter.setName(establishment.getName());
-        currentWaiter.setEmail(establishment.getEmail());
-        currentWaiter.setPhone(establishment.getPhone());
-        currentWaiter.setEmployeeId(establishment.getEmployeeId());
-        if (establishment.getPassword() != null
-                && !establishment.getPassword().equals(currentWaiter.getPassword())) {
-            String salt = generateSalt();
-            String hashedPassword = hashPassword(establishment.getPassword(), salt);
-            establishment.setSalt(salt);
-            establishment.setPassword(hashedPassword);
+        currentWaiter.setName(waiter.getName());
+        currentWaiter.setEmail(waiter.getEmail());
+        currentWaiter.setPhone(waiter.getPhone());
+        currentWaiter.setEmployeeId(waiter.getEmployeeId());
+        if (waiter.getPassword() != null
+                && !waiter.getPassword().equals(currentWaiter.getPassword())) {
+            String salt = PasswordUtil.generateSalt();
+            String hashedPassword = hashPassword(waiter.getPassword(), salt);
+            waiter.setSalt(salt);
+            waiter.setPassword(hashedPassword);
         }
-        WaiterEntity establishmentResult = waiterRepository.save(establishment);
-        return objectMapper.convertValue(establishmentResult, WaiterDTO.class);
+        WaiterEntity waiterResult = waiterRepository.save(waiter);
+        return objectMapper.convertValue(waiterResult, WaiterDTO.class);
     }
 
     public void delete(UUID uuid) {
@@ -87,11 +78,11 @@ public class WaiterService {
     }
 
     public WaiterDTO login(String email, String password) {
-        WaiterEntity establishment = waiterRepository.findByEmailAndActiveTrue(email)
+        WaiterEntity waiter = waiterRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password"));
-        if (!BCrypt.checkpw(password + establishment.getSalt(), establishment.getPassword())) {
+        if (!BCrypt.checkpw(password + waiter.getSalt(), waiter.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
         }
-        return objectMapper.convertValue(establishment, WaiterDTO.class);
+        return objectMapper.convertValue(waiter, WaiterDTO.class);
     }
 }
