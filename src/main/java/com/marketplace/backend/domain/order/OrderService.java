@@ -1,5 +1,8 @@
 package com.marketplace.backend.domain.order;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.domain.address.AddressEntity;
+import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
 import com.marketplace.backend.domain.order.dto.OrderDTO;
 import com.marketplace.backend.domain.order.dto.UpdateOrderStatusDTO;
 import com.marketplace.backend.domain.order.entity.OrderEntity;
@@ -7,6 +10,7 @@ import com.marketplace.backend.domain.order.repository.OrderRepository;
 import com.marketplace.backend.domain.product.ProductService;
 import com.marketplace.backend.domain.product.entity.ProductEntity;
 import com.marketplace.backend.domain.order.enums.OrderStatus;
+import com.marketplace.backend.domain.waiter.WaiterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,7 +29,9 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductService productService;
+    private final WaiterService waiterService;
     private final CouponService couponService;
+    private final ObjectMapper objectMapper;
 
     public OrderEntity create(OrderDTO orderDTO) {
         List<ProductEntity> products = new ArrayList<>();
@@ -40,13 +46,14 @@ public class OrderService {
             totalValue = couponService.applyCoupon(orderDTO.getCoupon(), totalValue);
         }
 
-        OrderEntity order = OrderEntity.builder()
-                .tableName(orderDTO.getTableName())
-                .observations(orderDTO.getObservations())
-                .active(true)
-                .paymentMethod(orderDTO.getPaymentMethod())
+        if(orderDTO.getWaiterId() != null && !orderDTO.getWaiterId().isBlank()) {
+            waiterService.getByEmployeeId(orderDTO.getWaiterId());
+        }
+
+        OrderEntity order = objectMapper.convertValue(orderDTO, OrderEntity.class);
+
+        order = order.builder()
                 .status(OrderStatus.PENDING)
-                .couponCode(orderDTO.getCoupon())
                 .total(totalValue)
                 .build();
 

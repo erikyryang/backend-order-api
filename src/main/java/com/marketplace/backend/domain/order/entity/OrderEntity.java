@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.marketplace.backend.domain.address.AddressEntity;
 import com.marketplace.backend.domain.order.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -41,6 +42,12 @@ public class OrderEntity {
     private String tableName;
 
     private String couponCode;
+
+    private String waiterId;
+
+    @ManyToOne
+    @JoinColumn(name = "address_id")
+    private AddressEntity address;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
