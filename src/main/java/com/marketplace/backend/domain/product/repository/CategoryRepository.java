@@ -1,5 +1,6 @@
-package com.marketplace.backend.domain.product;
+package com.marketplace.backend.domain.product.repository;
 
+import com.marketplace.backend.domain.product.entity.CategoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

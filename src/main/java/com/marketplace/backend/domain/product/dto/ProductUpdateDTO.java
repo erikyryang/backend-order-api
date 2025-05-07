@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.product;
+package com.marketplace.backend.domain.product.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

@@ -1,6 +1,10 @@
 package com.marketplace.backend.controller;
 
 import com.marketplace.backend.domain.product.*;
+import com.marketplace.backend.domain.product.dto.ProductCategoryDTO;
+import com.marketplace.backend.domain.product.dto.ProductDTO;
+import com.marketplace.backend.domain.product.dto.ProductUpdateDTO;
+import com.marketplace.backend.domain.product.entity.ProductEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

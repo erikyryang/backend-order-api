@@ -1,5 +1,7 @@
 package com.marketplace.backend.domain.product;
 
+import com.marketplace.backend.domain.product.entity.CategoryEntity;
+import com.marketplace.backend.domain.product.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

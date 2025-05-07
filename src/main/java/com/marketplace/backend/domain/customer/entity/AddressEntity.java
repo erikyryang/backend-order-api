@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.user;
+package com.marketplace.backend.domain.customer.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;

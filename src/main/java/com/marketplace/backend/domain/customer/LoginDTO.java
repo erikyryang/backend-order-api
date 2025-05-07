@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.user;
+package com.marketplace.backend.domain.customer;
 
 import lombok.Getter;
 

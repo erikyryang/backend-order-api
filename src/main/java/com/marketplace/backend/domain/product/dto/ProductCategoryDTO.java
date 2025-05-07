@@ -1,5 +1,7 @@
-package com.marketplace.backend.domain.product;
+package com.marketplace.backend.domain.product.dto;
 
+import com.marketplace.backend.domain.product.entity.CategoryEntity;
+import com.marketplace.backend.domain.product.entity.ProductEntity;
 import lombok.*;
 
 import java.util.List;

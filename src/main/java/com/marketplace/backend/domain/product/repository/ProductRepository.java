@@ -1,5 +1,6 @@
-package com.marketplace.backend.domain.product;
+package com.marketplace.backend.domain.product.repository;
 
+import com.marketplace.backend.domain.product.entity.ProductEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

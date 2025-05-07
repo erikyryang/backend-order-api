@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.product;
+package com.marketplace.backend.domain.product.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

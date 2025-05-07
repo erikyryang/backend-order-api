@@ -1,6 +1,12 @@
 package com.marketplace.backend.domain.product;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.domain.product.dto.ProductCategoryDTO;
+import com.marketplace.backend.domain.product.dto.ProductDTO;
+import com.marketplace.backend.domain.product.dto.ProductUpdateDTO;
+import com.marketplace.backend.domain.product.entity.CategoryEntity;
+import com.marketplace.backend.domain.product.entity.ProductEntity;
+import com.marketplace.backend.domain.product.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,12 +38,10 @@ public class ProductService {
 
     public ProductEntity save(ProductUpdateDTO productDTO) {
         ProductEntity product = objectMapper.convertValue(productDTO, ProductEntity.class);
-
         if (productDTO.getCategoryName() != null) {
             CategoryEntity category = categoryService.saveIfNotExistsByName(productDTO.getCategoryName());
             product.setCategoryUuid(category.getUuid());
         }
-
         return productRepository.save(product);
     }
 
