@@ -1,72 +1,97 @@
 package com.marketplace.backend.domain.waiter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.EntityNotFoundException;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class WaiterService {
 
     private final WaiterRepository waiterRepository;
+    private final ObjectMapper objectMapper;
 
-    public WaiterEntity create(WaiterEntity waiter) {
-        Optional<WaiterEntity> existingByEmail = waiterRepository.findByEmail(waiter.getEmail());
-        if (existingByEmail.isPresent()) {
-            throw new IllegalArgumentException("Email já está em uso");
-        }
+    private static final int SALT_LENGTH = 16;
 
-        Optional<WaiterEntity> existingByEmployeeId = waiterRepository.findByEmployeeId(waiter.getEmployeeId());
-        if (existingByEmployeeId.isPresent()) {
-            throw new IllegalArgumentException("ID de Funcionário já está em uso");
-        }
-
-        return waiterRepository.save(waiter);
+    private String generateSalt() {
+        byte[] salt = new byte[SALT_LENGTH];
+        new SecureRandom().nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
     }
 
-    public List<WaiterEntity> getAllWaiters() {
-        return waiterRepository.findAll();
+    private String hashPassword(String password, String salt) {
+        return BCrypt.hashpw(password + salt, BCrypt.gensalt());
     }
 
-    public WaiterEntity getWaiterById(Long id) {
-        return waiterRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Garçom não encontrado com ID: " + id));
+    public WaiterDTO create(WaiterDTO waiterRequest) {
+        WaiterEntity waiter = objectMapper.convertValue(waiterRequest, WaiterEntity.class);
+        if (waiterRepository.findByEmailAndActiveTrue(waiter.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
+        }
+
+        String salt = generateSalt();
+        String hashedPassword = hashPassword(waiter.getPassword(), salt);
+
+        waiter.setSalt(salt);
+        waiter.setPassword(hashedPassword);
+
+        WaiterEntity waiterResult = waiterRepository.save(waiter);
+        return objectMapper.convertValue(waiterResult, WaiterDTO.class);
     }
 
-    public WaiterEntity update(Long id, WaiterEntity updatedWaiter) {
-        WaiterEntity existingWaiter = getWaiterById(id);
-
-        // Verifica se o novo email ou employeeId já estão em uso por outro garçom
-        if (!existingWaiter.getEmail().equals(updatedWaiter.getEmail())) {
-            Optional<WaiterEntity> emailCheck = waiterRepository.findByEmail(updatedWaiter.getEmail());
-            if (emailCheck.isPresent()) {
-                throw new IllegalArgumentException("Email já está em uso");
-            }
-        }
-
-        if (!existingWaiter.getEmployeeId().equals(updatedWaiter.getEmployeeId())) {
-            Optional<WaiterEntity> employeeIdCheck = waiterRepository.findByEmployeeId(updatedWaiter.getEmployeeId());
-            if (employeeIdCheck.isPresent()) {
-                throw new IllegalArgumentException("ID de Funcionário já está em uso");
-            }
-        }
-
-        existingWaiter.setName(updatedWaiter.getName());
-        existingWaiter.setEmail(updatedWaiter.getEmail());
-        existingWaiter.setPhone(updatedWaiter.getPhone());
-        existingWaiter.setEmployeeId(updatedWaiter.getEmployeeId());
-
-        return waiterRepository.save(existingWaiter);
+    public List<WaiterDTO> getAllWaiters() {
+        List<WaiterEntity> waiters = waiterRepository.findAllByActiveTrue();
+        return waiters.stream().map(
+                waiter -> objectMapper.convertValue(waiter, WaiterDTO.class)).toList();
     }
 
-    public void delete(Long id) {
-        if (!waiterRepository.existsById(id)) {
-            throw new EntityNotFoundException("Garçom não encontrado com ID: " + id);
+    public WaiterDTO getByEmployeeId(String employeeId) {
+        WaiterEntity waiter = waiterRepository.findByEmployeeIdAndActiveTrue(employeeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Waiter not found"));;
+        return objectMapper.convertValue(waiter, WaiterDTO.class);
+    }
+
+    public WaiterDTO update(UUID uuid, WaiterDTO waiterRequest) {
+        WaiterEntity establishment = objectMapper.convertValue(waiterRequest, WaiterEntity.class);
+        WaiterEntity currentWaiter = waiterRepository.findById(uuid)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Waiter not found"));
+        currentWaiter.setName(establishment.getName());
+        currentWaiter.setEmail(establishment.getEmail());
+        currentWaiter.setPhone(establishment.getPhone());
+        currentWaiter.setEmployeeId(establishment.getEmployeeId());
+        if (establishment.getPassword() != null
+                && !establishment.getPassword().equals(currentWaiter.getPassword())) {
+            String salt = generateSalt();
+            String hashedPassword = hashPassword(establishment.getPassword(), salt);
+            establishment.setSalt(salt);
+            establishment.setPassword(hashedPassword);
         }
-        waiterRepository.deleteById(id);
+        WaiterEntity establishmentResult = waiterRepository.save(establishment);
+        return objectMapper.convertValue(establishmentResult, WaiterDTO.class);
+    }
+
+    public void delete(UUID uuid) {
+        if (!waiterRepository.existsById(uuid)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Waiter not found");
+        }
+        waiterRepository.deleteLogicallyByUuid(uuid);
+    }
+
+    public WaiterDTO login(String email, String password) {
+        WaiterEntity establishment = waiterRepository.findByEmailAndActiveTrue(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password"));
+        if (!BCrypt.checkpw(password + establishment.getSalt(), establishment.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
+        }
+        return objectMapper.convertValue(establishment, WaiterDTO.class);
     }
 }

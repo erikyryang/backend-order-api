@@ -1,5 +1,7 @@
 package com.marketplace.backend.domain.establishment;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.domain.establishment.dto.EstablishmentDTO;
 import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
 import com.marketplace.backend.domain.establishment.repository.EstablishmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.util.UUID;
 public class EstablishmentService {
 
     private final EstablishmentRepository establishmentRepository;
+    private final ObjectMapper objectMapper;
 
     private static final int SALT_LENGTH = 16;
 
@@ -33,66 +36,60 @@ public class EstablishmentService {
         return BCrypt.hashpw(password + salt, BCrypt.gensalt());
     }
 
-    public EstablishmentEntity create(EstablishmentEntity customer) {
-        if (establishmentRepository.findByEmailAndActiveTrue(customer.getEmail()).isPresent()) {
-            throw new RuntimeException("Email already exists");
+    public EstablishmentDTO create(EstablishmentDTO establishmentRequest) {
+        EstablishmentEntity establishment = objectMapper.convertValue(establishmentRequest, EstablishmentEntity.class);
+        if (establishmentRepository.findByEmailAndActiveTrue(establishment.getEmail()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
 
         String salt = generateSalt();
-        String hashedPassword = hashPassword(customer.getPassword(), salt);
+        String hashedPassword = hashPassword(establishment.getPassword(), salt);
 
-        customer.setSalt(salt);
-        customer.setPassword(hashedPassword);
+        establishment.setSalt(salt);
+        establishment.setPassword(hashedPassword);
 
-        return establishmentRepository.save(customer);
+        EstablishmentEntity establishmentResult = establishmentRepository.save(establishment);
+        return objectMapper.convertValue(establishmentResult, EstablishmentDTO.class);
     }
 
-    public List<EstablishmentEntity> getAllEstablishments() {
-        return establishmentRepository.findAllByActiveTrue();
+    public EstablishmentDTO getByUuid(UUID uuid) {
+        EstablishmentEntity establishment = establishmentRepository.findByUuidAndActiveTrue(uuid).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not found"));
+        return objectMapper.convertValue(establishment, EstablishmentDTO.class);
     }
 
-    public EstablishmentEntity getByUuid(UUID uuid) {
-        return establishmentRepository.findByUuidAndActiveTrue(uuid).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not found"));
-    }
-
-    public EstablishmentEntity update(UUID uuid, EstablishmentEntity establishmentDetails) {
-        EstablishmentEntity establishment = establishmentRepository.findById(uuid)
+    public EstablishmentDTO update(UUID uuid, EstablishmentDTO establishmentRequest) {
+        EstablishmentEntity establishment = objectMapper.convertValue(establishmentRequest, EstablishmentEntity.class);
+        EstablishmentEntity currentEstablishment = establishmentRepository.findById(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not found"));
-        establishment.setName(establishment.getName());
-        establishment.setEmail(establishment.getEmail());
-        establishment.setPhone(establishment.getPhone());
-        establishment.setAddresses(establishment.getAddresses());
-        if (establishmentDetails.getPassword() != null && !establishment.getPassword().equals(establishmentDetails.getPassword())) {
+        currentEstablishment.setName(establishment.getName());
+        currentEstablishment.setEmail(establishment.getEmail());
+        currentEstablishment.setPhone(establishment.getPhone());
+        currentEstablishment.setAddresses(establishment.getAddresses());
+        if (establishment.getPassword() != null
+                && !establishment.getPassword().equals(currentEstablishment.getPassword())) {
             String salt = generateSalt();
             String hashedPassword = hashPassword(establishment.getPassword(), salt);
             establishment.setSalt(salt);
             establishment.setPassword(hashedPassword);
         }
-        return establishmentRepository.save(establishment);
+        EstablishmentEntity establishmentResult = establishmentRepository.save(establishment);
+        return objectMapper.convertValue(establishmentResult, EstablishmentDTO.class);
     }
 
     public void delete(UUID uuid) {
         if (!establishmentRepository.existsById(uuid)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Establishment not found");
         }
         establishmentRepository.deleteLogicallyByUuid(uuid);
     }
 
-    public boolean validatePassword(UUID uuid, String password) {
-        EstablishmentEntity customer = establishmentRepository.findByUuidAndActiveTrue(uuid).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        String hashedInputPassword = hashPassword(password, customer.getSalt());
-        return hashedInputPassword.equals(customer.getPassword());
-    }
-
-    public EstablishmentEntity login(String email, String password) {
-        EstablishmentEntity customer = establishmentRepository.findByEmailAndActiveTrue(email)
+    public EstablishmentDTO login(String email, String password) {
+        EstablishmentEntity establishment = establishmentRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password"));
-
-        if (!BCrypt.checkpw(password + customer.getSalt(), customer.getPassword())) {
+        if (!BCrypt.checkpw(password + establishment.getSalt(), establishment.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
         }
-        return customer;
+        return objectMapper.convertValue(establishment, EstablishmentDTO.class);
     }
-
 }

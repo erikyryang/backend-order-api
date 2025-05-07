@@ -1,5 +1,6 @@
 package com.marketplace.backend.domain.waiter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,10 +18,7 @@ import java.util.UUID;
 public class WaiterEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true, nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
 
     private String name;
@@ -31,6 +29,16 @@ public class WaiterEntity {
     private String phone;
 
     private String employeeId;
+
+    @JsonIgnore
+    @Column(nullable = false)
+    private String salt;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    private boolean active = true;
 
     @PrePersist
     private void generateUuid() {

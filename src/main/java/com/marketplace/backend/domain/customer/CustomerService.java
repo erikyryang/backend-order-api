@@ -90,13 +90,6 @@ public class CustomerService {
         customerRepository.deleteLogicallyByUuid(uuid);
     }
 
-    public boolean validatePassword(UUID uuid, String password) {
-        CustomerEntity customer = customerRepository.findByUuidAndActiveTrue(uuid).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        String hashedInputPassword = hashPassword(password, customer.getSalt());
-        return hashedInputPassword.equals(customer.getPassword());
-    }
-
     public CustomerDTO login(String email, String password) {
         CustomerEntity customer = customerRepository.findByEmailAndActiveTrue(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password"));
