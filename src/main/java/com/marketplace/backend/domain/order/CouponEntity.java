@@ -1,5 +1,9 @@
 package com.marketplace.backend.domain.order;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.marketplace.backend.domain.order.enums.CouponStatus;
 import com.marketplace.backend.domain.order.enums.DiscountEnum;
 import jakarta.persistence.*;
@@ -27,6 +31,9 @@ public class CouponEntity {
     private DiscountEnum discountType;
     private double discountAmount;
     private boolean active;
+
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime expirationTime;
 
     @Enumerated(EnumType.STRING)

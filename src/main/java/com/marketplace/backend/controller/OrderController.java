@@ -9,9 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
@@ -28,7 +26,7 @@ public class OrderController {
     @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<OrderEntity> getById(@PathVariable("id") String id) {
         Double idConverted = Double.valueOf(id);
-        OrderEntity order = orderService.findByOrderId(idConverted).getFirst();
+        OrderEntity order = orderService.findById(idConverted).getFirst();
         return ResponseEntity.ok(order);
     }
 
@@ -40,44 +38,24 @@ public class OrderController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable String id, @RequestBody OrderDTO orderDTO) {
-        try {
-            Double idConverted = Double.valueOf(id);
-            OrderEntity updated = orderService.update(idConverted, orderDTO);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid request");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
+        Double idConverted = Double.valueOf(id);
+        OrderEntity updated = orderService.update(idConverted, orderDTO);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable String id) {
-        try {
-            Double idConverted = Double.valueOf(id);
-            orderService.deleteLogicallyByUuid(idConverted);
-            return ResponseEntity.ok().build();
-        } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid request");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
+        Double idConverted = Double.valueOf(id);
+        orderService.deleteLogicallyByUuid(idConverted);
+        return ResponseEntity.ok().build();
+
     }
 
     @PutMapping("/update/status/{id}")
     public ResponseEntity<?> updateStatus(@PathVariable String id, @RequestBody UpdateOrderStatusDTO statusOrderDTO) {
-        try {
-            Double idConverted = Double.valueOf(id);
-            OrderEntity updated = orderService
-                    .updateStatus(idConverted, statusOrderDTO);
-            return ResponseEntity.ok(updated);
-        } catch (IllegalArgumentException e) {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "Invalid request");
-            errorResponse.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
-        }
+        Double idConverted = Double.valueOf(id);
+        OrderEntity updated = orderService
+                .updateStatus(idConverted, statusOrderDTO);
+        return ResponseEntity.ok(updated);
     }
 }

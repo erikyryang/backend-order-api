@@ -4,7 +4,9 @@ import com.marketplace.backend.domain.product.ProductService;
 import com.marketplace.backend.domain.product.ProductEntity;
 import com.marketplace.backend.domain.order.enums.OrderStatus;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +31,7 @@ public class OrderService {
             products.add(product);
         });
 
-        var totalValue = calculateItemsTotal(orderDTO.getItems());
+        double totalValue = calculateItemsTotal(orderDTO.getItems());
         if(orderDTO.getCoupon() != null && !orderDTO.getCoupon().isBlank()) {
             totalValue = couponService.applyCoupon(orderDTO.getCoupon(), totalValue);
         }
@@ -48,7 +50,7 @@ public class OrderService {
     }
 
     public OrderEntity update(Double id, OrderDTO orderDTO) {
-        OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        OrderEntity order = orderRepository.findByActiveTrueAndId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: " + id));
         List<ProductEntity> products = new ArrayList<>();
 
         orderDTO.getItems().forEach(item -> {
@@ -59,11 +61,11 @@ public class OrderService {
         order.getItens().clear();
         order.getItens().addAll(convertProductsToOrderItem(products, order));
 
-        var totalValue = calculateItemsTotal(orderDTO.getItems());
+        double totalValue = calculateItemsTotal(orderDTO.getItems());
         if(orderDTO.getCoupon() != null && !orderDTO.getCoupon().isBlank()) {
             totalValue = couponService.applyCoupon(orderDTO.getCoupon(), totalValue);
         }
-        order.setTotal(calculateItemsTotal(orderDTO.getItems()));
+        order.setTotal(totalValue);
 
         if(orderDTO.getPaymentMethod() != null){
             order.setPaymentMethod(orderDTO.getPaymentMethod());
@@ -80,16 +82,16 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public List<OrderEntity> findByOrderId(Double id) {
+    public List<OrderEntity> findById(Double id) {
        if (id == null) {
-            throw new IllegalArgumentException("Order UUID cannot be null or empty");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order UUID cannot be null or empty");
         }
 
         try {
-            OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+            OrderEntity order = orderRepository.findByActiveTrueAndId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: " + id));
             return List.of(order);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Invalid ID format: " + id, e);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid ID format: " + id);
         }
     }
 
@@ -98,11 +100,12 @@ public class OrderService {
     }
 
     public void deleteLogicallyByUuid(Double id) {
+        findById(id);
         orderRepository.deleteLogicallyByUuid(id);
     }
 
     public OrderEntity updateStatus(Double id, UpdateOrderStatusDTO statusOrderDTO) {
-        OrderEntity order = orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+        OrderEntity order = orderRepository.findByActiveTrueAndId(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: " + id));
         order.setStatus(statusOrderDTO.getStatus());
         return orderRepository.save(order);
     }

@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<OrderEntity, Double> {
 
-    Optional<OrderEntity> findById(Double orderId);
+    Optional<OrderEntity> findByActiveTrueAndId(Double orderId);
 
     List<OrderEntity> findAllByActiveTrue();
 
