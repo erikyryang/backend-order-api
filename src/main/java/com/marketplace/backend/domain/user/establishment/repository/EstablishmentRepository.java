@@ -1,6 +1,6 @@
-package com.marketplace.backend.domain.establishment.repository;
+package com.marketplace.backend.domain.user.establishment.repository;
 
-import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
+import com.marketplace.backend.domain.user.establishment.entity.EstablishmentEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,4 +23,6 @@ public interface EstablishmentRepository extends JpaRepository<EstablishmentEnti
     Optional<EstablishmentEntity> findByEmailAndActiveTrue(String email);
 
     List<EstablishmentEntity> findAllByActiveTrue();
+
+    Optional<EstablishmentEntity> findByEmailAndTenantIdAndActiveTrue(String email, UUID tenantId);
 }

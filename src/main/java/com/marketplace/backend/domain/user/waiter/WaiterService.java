@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.waiter;
+package com.marketplace.backend.domain.user.waiter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.backend.util.PasswordUtil;
@@ -9,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 

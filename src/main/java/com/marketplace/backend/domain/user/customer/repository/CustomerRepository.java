@@ -1,6 +1,7 @@
-package com.marketplace.backend.domain.customer.repository;
+package com.marketplace.backend.domain.user.customer.repository;
 
-import com.marketplace.backend.domain.customer.entity.CustomerEntity;
+import com.marketplace.backend.domain.user.customer.entity.CustomerEntity;
+import com.marketplace.backend.domain.user.establishment.entity.EstablishmentEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,4 +24,6 @@ public interface CustomerRepository extends JpaRepository<CustomerEntity, UUID> 
     Optional<CustomerEntity> findByEmailAndActiveTrue(String email);
 
     List<CustomerEntity> findAllByActiveTrue();
+
+    Optional<CustomerEntity> findByEmailAndTenantIdAndActiveTrue(String email, UUID tenantId);
 }

@@ -1,6 +1,7 @@
-package com.marketplace.backend.domain.waiter;
+package com.marketplace.backend.domain.user.waiter;
 
 
+import com.marketplace.backend.domain.user.customer.entity.CustomerEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,4 +24,6 @@ public interface WaiterRepository extends JpaRepository<WaiterEntity, UUID> {
     Optional<WaiterEntity> findByEmailAndActiveTrue(String email);
 
     List<WaiterEntity> findAllByActiveTrue();
+
+    Optional<WaiterEntity> findByEmailAndTenantIdAndActiveTrue(String email, UUID tenantId);
 }

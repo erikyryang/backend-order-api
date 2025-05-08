@@ -1,7 +1,8 @@
-package com.marketplace.backend.domain.establishment.entity;
+package com.marketplace.backend.domain.user.customer.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marketplace.backend.domain.address.AddressEntity;
+import com.marketplace.backend.domain.user.BaseUserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,20 +17,11 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "establishment_tbl")
-public class EstablishmentEntity {
+@Table(name = "customer_tbl")
+public class CustomerEntity extends BaseUserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID uuid;
-
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false, unique = true)
-    private String email;
-
-    @Column(nullable = false)
-    private String password;
 
     @JsonIgnore
     @Column(nullable = false)
@@ -42,7 +34,7 @@ public class EstablishmentEntity {
     private boolean active = true;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "establishment_id")
+    @JoinColumn(name = "customer_id")
     private List<AddressEntity> addresses;
 
 }

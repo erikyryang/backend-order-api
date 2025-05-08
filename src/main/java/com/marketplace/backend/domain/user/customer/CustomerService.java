@@ -1,9 +1,9 @@
-package com.marketplace.backend.domain.customer;
+package com.marketplace.backend.domain.user.customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marketplace.backend.domain.customer.dto.CustomerDTO;
-import com.marketplace.backend.domain.customer.entity.CustomerEntity;
-import com.marketplace.backend.domain.customer.repository.CustomerRepository;
+import com.marketplace.backend.domain.user.customer.dto.CustomerDTO;
+import com.marketplace.backend.domain.user.customer.entity.CustomerEntity;
+import com.marketplace.backend.domain.user.customer.repository.CustomerRepository;
 import com.marketplace.backend.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

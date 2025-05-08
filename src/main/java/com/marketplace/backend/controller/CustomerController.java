@@ -1,8 +1,8 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.customer.CustomerService;
-import com.marketplace.backend.domain.customer.dto.CustomerDTO;
-import com.marketplace.backend.domain.customer.dto.LoginDTO;
+import com.marketplace.backend.domain.user.customer.CustomerService;
+import com.marketplace.backend.domain.user.customer.dto.CustomerDTO;
+import com.marketplace.backend.domain.user.customer.dto.LoginDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.establishment.dto;
+package com.marketplace.backend.domain.user.customer.dto;
 
 import lombok.Getter;
 

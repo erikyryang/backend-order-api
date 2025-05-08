@@ -1,9 +1,9 @@
-package com.marketplace.backend.domain.establishment;
+package com.marketplace.backend.domain.user.establishment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marketplace.backend.domain.establishment.dto.EstablishmentDTO;
-import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
-import com.marketplace.backend.domain.establishment.repository.EstablishmentRepository;
+import com.marketplace.backend.domain.user.establishment.dto.EstablishmentDTO;
+import com.marketplace.backend.domain.user.establishment.entity.EstablishmentEntity;
+import com.marketplace.backend.domain.user.establishment.repository.EstablishmentRepository;
 import com.marketplace.backend.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

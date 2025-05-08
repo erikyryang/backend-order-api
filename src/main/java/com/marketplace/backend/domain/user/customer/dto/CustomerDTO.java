@@ -1,20 +1,28 @@
-package com.marketplace.backend.domain.establishment.dto;
+package com.marketplace.backend.domain.user.customer.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.marketplace.backend.domain.address.AddressDTO;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
-public class EstablishmentDTO {
-    private UUID uuid;
+public class CustomerDTO {
+
+    @Nullable
+    private String uuid;
+
     private String name;
+
     private String email;
+
+    @JsonIgnore
     private String password;
-    private String salt;
+
     private String phone;
+
     private List<AddressDTO> addresses;
 }

@@ -2,9 +2,7 @@ package com.marketplace.backend.domain.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.backend.domain.address.AddressDTO;
-import com.marketplace.backend.domain.address.AddressEntity;
 import com.marketplace.backend.domain.address.AddressRepository;
-import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
 import com.marketplace.backend.domain.order.dto.OrderDTO;
 import com.marketplace.backend.domain.order.dto.UpdateOrderStatusDTO;
 import com.marketplace.backend.domain.order.entity.OrderEntity;
@@ -12,7 +10,7 @@ import com.marketplace.backend.domain.order.repository.OrderRepository;
 import com.marketplace.backend.domain.product.ProductService;
 import com.marketplace.backend.domain.product.entity.ProductEntity;
 import com.marketplace.backend.domain.order.enums.OrderStatus;
-import com.marketplace.backend.domain.waiter.WaiterService;
+import com.marketplace.backend.domain.user.waiter.WaiterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
