@@ -1,8 +1,8 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.customer.CustomerService;
-import com.marketplace.backend.domain.customer.dto.CustomerDTO;
-import com.marketplace.backend.domain.customer.dto.LoginDTO;
+import com.marketplace.backend.domain.user.customer.CustomerService;
+import com.marketplace.backend.domain.user.customer.dto.CustomerDTO;
+import com.marketplace.backend.domain.user.customer.dto.LoginDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,18 +24,6 @@ import java.util.UUID;
 public class CustomerController {
 
     private final CustomerService customerService;
-
-    @Operation(summary = "Register a new customer", description = "Creates a new customer with the provided details")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Customer registered successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid customer data provided", content = @Content)
-    })
-    @PostMapping("/register")
-    public ResponseEntity<CustomerDTO> create(@RequestBody CustomerDTO customer) {
-        CustomerDTO createdCustomer = customerService.create(customer);
-        return ResponseEntity.ok(createdCustomer);
-    }
 
     @Operation(summary = "Retrieve all customers", description = "Fetches a list of all registered customers")
     @ApiResponses(value = {
@@ -89,17 +77,5 @@ public class CustomerController {
         UUID userUuid = UUID.fromString(uuid);
         customerService.delete(userUuid);
         return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "Customer login", description = "Authenticates a customer using email and password")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Customer authenticated successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = CustomerDTO.class))),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content)
-    })
-    @PostMapping("/login")
-    public ResponseEntity<CustomerDTO> login(@RequestBody LoginDTO loginRequest) {
-        CustomerDTO customer = customerService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        return ResponseEntity.ok(customer);
     }
 }

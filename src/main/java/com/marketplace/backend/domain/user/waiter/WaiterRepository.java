@@ -1,4 +1,4 @@
-package com.marketplace.backend.domain.waiter;
+package com.marketplace.backend.domain.user.waiter;
 
 
 import jakarta.transaction.Transactional;

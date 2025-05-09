@@ -1,7 +1,7 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.waiter.WaiterDTO;
-import com.marketplace.backend.domain.waiter.WaiterService;
+import com.marketplace.backend.domain.user.waiter.WaiterDTO;
+import com.marketplace.backend.domain.user.waiter.WaiterService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -17,7 +17,7 @@ public class OrderDTO {
     private String observations;
     private String paymentMethod;
     private String coupon;
-    private String waiterId;
+    private String waiterUuid;
     private List<ItemDTO> items;
     private AddressDTO address;
 

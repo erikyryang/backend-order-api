@@ -1,9 +1,12 @@
-package com.marketplace.backend.domain.establishment;
+package com.marketplace.backend.domain.user.establishment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marketplace.backend.domain.establishment.dto.EstablishmentDTO;
-import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
-import com.marketplace.backend.domain.establishment.repository.EstablishmentRepository;
+import com.marketplace.backend.domain.user.RoleEnum;
+import com.marketplace.backend.domain.user.establishment.dto.EstablishmentDTO;
+import com.marketplace.backend.domain.user.establishment.entity.EstablishmentEntity;
+import com.marketplace.backend.domain.user.establishment.repository.EstablishmentRepository;
+import com.marketplace.backend.domain.user.waiter.WaiterDTO;
+import com.marketplace.backend.domain.user.waiter.WaiterEntity;
 import com.marketplace.backend.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
+
+import static com.marketplace.backend.util.PasswordUtil.hashPassword;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +33,10 @@ public class EstablishmentService {
         }
 
         String salt = PasswordUtil.generateSalt();
-        String hashedPassword = PasswordUtil.hashPassword(establishment.getPassword(), salt);
         establishment.setSalt(salt);
-        establishment.setPassword(hashedPassword);
-
+        establishment.setPassword(hashPassword(establishmentRequest.getPassword(), salt));
+        establishment.setRole(RoleEnum.ESTABLISHMENT);
+        establishment.setActive(true);
         EstablishmentEntity establishmentResult = establishmentRepository.save(establishment);
         return objectMapper.convertValue(establishmentResult, EstablishmentDTO.class);
     }

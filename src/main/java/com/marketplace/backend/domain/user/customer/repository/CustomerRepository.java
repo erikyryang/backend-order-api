@@ -1,6 +1,6 @@
-package com.marketplace.backend.domain.customer.repository;
+package com.marketplace.backend.domain.user.customer.repository;
 
-import com.marketplace.backend.domain.customer.entity.CustomerEntity;
+import com.marketplace.backend.domain.user.customer.entity.CustomerEntity;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

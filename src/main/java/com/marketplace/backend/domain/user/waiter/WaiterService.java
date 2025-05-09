@@ -1,16 +1,14 @@
-package com.marketplace.backend.domain.waiter;
+package com.marketplace.backend.domain.user.waiter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.marketplace.backend.domain.user.RoleEnum;
 import com.marketplace.backend.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.server.ResponseStatusException;
 
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,11 +28,11 @@ public class WaiterService {
         }
 
         String salt = PasswordUtil.generateSalt();
-        String hashedPassword = hashPassword(waiter.getPassword(), salt);
 
         waiter.setSalt(salt);
-        waiter.setPassword(hashedPassword);
-
+        waiter.setPassword(hashPassword(waiterRequest.getPassword(), salt));
+        waiter.setRole(RoleEnum.WAITER);
+        waiter.setActive(true);
         WaiterEntity waiterResult = waiterRepository.save(waiter);
         return objectMapper.convertValue(waiterResult, WaiterDTO.class);
     }
@@ -47,6 +45,12 @@ public class WaiterService {
 
     public WaiterDTO getByEmployeeId(String employeeId) {
         WaiterEntity waiter = waiterRepository.findByEmployeeIdAndActiveTrue(employeeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Waiter not found"));;
+        return objectMapper.convertValue(waiter, WaiterDTO.class);
+    }
+
+    public WaiterDTO getByUuid(UUID uuid) {
+        WaiterEntity waiter = waiterRepository.findById(uuid)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Waiter not found"));;
         return objectMapper.convertValue(waiter, WaiterDTO.class);
     }
@@ -75,14 +79,5 @@ public class WaiterService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Waiter not found");
         }
         waiterRepository.deleteLogicallyByUuid(uuid);
-    }
-
-    public WaiterDTO login(String email, String password) {
-        WaiterEntity waiter = waiterRepository.findByEmailAndActiveTrue(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password"));
-        if (!BCrypt.checkpw(password + waiter.getSalt(), waiter.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid email or password");
-        }
-        return objectMapper.convertValue(waiter, WaiterDTO.class);
     }
 }

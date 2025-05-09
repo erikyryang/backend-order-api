@@ -1,9 +1,10 @@
-package com.marketplace.backend.domain.customer;
+package com.marketplace.backend.domain.user.customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.marketplace.backend.domain.customer.dto.CustomerDTO;
-import com.marketplace.backend.domain.customer.entity.CustomerEntity;
-import com.marketplace.backend.domain.customer.repository.CustomerRepository;
+import com.marketplace.backend.domain.user.RoleEnum;
+import com.marketplace.backend.domain.user.customer.dto.CustomerDTO;
+import com.marketplace.backend.domain.user.customer.entity.CustomerEntity;
+import com.marketplace.backend.domain.user.customer.repository.CustomerRepository;
 import com.marketplace.backend.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
+
+import static com.marketplace.backend.util.PasswordUtil.hashPassword;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +33,10 @@ public class CustomerService {
         }
 
         String salt = PasswordUtil.generateSalt();
-        String hashedPassword = PasswordUtil.hashPassword(customer.getPassword(), salt);
-
         customer.setSalt(salt);
-        customer.setPassword(hashedPassword);
-
+        customer.setPassword(hashPassword(customerRequest.getPassword(), salt));
+        customer.setRole(RoleEnum.CUSTOMER);
+        customer.setActive(true);
         CustomerEntity customerResult = customerRepository.save(customer);
         return objectMapper.convertValue(customerResult, CustomerDTO.class);
     }

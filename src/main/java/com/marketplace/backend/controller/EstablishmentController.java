@@ -1,8 +1,8 @@
 package com.marketplace.backend.controller;
 
-import com.marketplace.backend.domain.establishment.dto.LoginDTO;
-import com.marketplace.backend.domain.establishment.EstablishmentService;
-import com.marketplace.backend.domain.establishment.dto.EstablishmentDTO;
+import com.marketplace.backend.domain.user.establishment.dto.LoginDTO;
+import com.marketplace.backend.domain.user.establishment.EstablishmentService;
+import com.marketplace.backend.domain.user.establishment.dto.EstablishmentDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -77,17 +77,5 @@ public class EstablishmentController {
         UUID uuidConverted = UUID.fromString(uuid);
         establishmentService.delete(uuidConverted);
         return ResponseEntity.noContent().build();
-    }
-
-    @Operation(summary = "Establishment login", description = "Authenticates a establishment using email and password")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Establishment authenticated successfully",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = EstablishmentDTO.class))),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials", content = @Content)
-    })
-    @PostMapping("/login")
-    public ResponseEntity<EstablishmentDTO> login(@RequestBody LoginDTO loginRequest) {
-        EstablishmentDTO establishment = establishmentService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        return ResponseEntity.ok(establishment);
     }
 }

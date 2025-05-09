@@ -2,9 +2,7 @@ package com.marketplace.backend.domain.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.marketplace.backend.domain.address.AddressDTO;
-import com.marketplace.backend.domain.address.AddressEntity;
 import com.marketplace.backend.domain.address.AddressRepository;
-import com.marketplace.backend.domain.establishment.entity.EstablishmentEntity;
 import com.marketplace.backend.domain.order.dto.OrderDTO;
 import com.marketplace.backend.domain.order.dto.UpdateOrderStatusDTO;
 import com.marketplace.backend.domain.order.entity.OrderEntity;
@@ -12,7 +10,7 @@ import com.marketplace.backend.domain.order.repository.OrderRepository;
 import com.marketplace.backend.domain.product.ProductService;
 import com.marketplace.backend.domain.product.entity.ProductEntity;
 import com.marketplace.backend.domain.order.enums.OrderStatus;
-import com.marketplace.backend.domain.waiter.WaiterService;
+import com.marketplace.backend.domain.user.waiter.WaiterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -49,8 +47,9 @@ public class OrderService {
             totalValue = couponService.applyCoupon(orderDTO.getCoupon(), totalValue);
         }
 
-        if(orderDTO.getWaiterId() != null && !orderDTO.getWaiterId().isBlank()) {
-            waiterService.getByEmployeeId(orderDTO.getWaiterId());
+        if(orderDTO.getWaiterUuid() != null && !orderDTO.getWaiterUuid().isBlank()) {
+            UUID waiterUuid = UUID.fromString(orderDTO.getWaiterUuid());
+            waiterService.getByUuid(waiterUuid);
         } else {
             checkAddress(orderDTO.getAddress());
         }
@@ -59,6 +58,7 @@ public class OrderService {
         order = order.builder()
                 .status(OrderStatus.PENDING)
                 .total(totalValue)
+                .active(true)
                 .build();
 
         order.setItens(convertProductsToOrderItem(products, order));
@@ -74,7 +74,7 @@ public class OrderService {
     public OrderEntity update(Double id, OrderDTO orderDTO) {
         OrderEntity order = orderRepository.findByActiveTrueAndId(id).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found: " + id));
-
+        order.setActive(true);
         List<ProductEntity> products = new ArrayList<>();
 
         orderDTO.getItems().forEach(item -> {
