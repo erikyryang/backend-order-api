@@ -14,7 +14,6 @@ public class EstablishmentDTO {
     private String name;
     private String email;
     private String password;
-    private String salt;
     private String phone;
     private List<AddressDTO> addresses;
 }

@@ -8,22 +8,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
 public class CustomerDTO {
-
-    @Nullable
-    private String uuid;
-
+    private UUID uuid;
     private String name;
-
     private String email;
-
-    @JsonIgnore
     private String password;
-
     private String phone;
-
     private List<AddressDTO> addresses;
 }

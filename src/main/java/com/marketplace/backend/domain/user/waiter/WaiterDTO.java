@@ -8,7 +8,6 @@ import java.util.UUID;
 @Getter
 @Setter
 public class WaiterDTO {
-    private Long id;
     private UUID uuid;
     private String name;
     private String email;
