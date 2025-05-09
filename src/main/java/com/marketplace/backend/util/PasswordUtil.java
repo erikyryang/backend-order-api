@@ -1,10 +1,6 @@
 package com.marketplace.backend.util;
 
 import jakarta.xml.bind.DatatypeConverter;
-import org.mindrot.jbcrypt.BCrypt;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -12,13 +8,6 @@ import java.security.SecureRandom;
 
 public class PasswordUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(PasswordUtil.class);
-
-    /**
-     * Gera um salt compatível com BCrypt.
-     *
-     * @return Um salt BCrypt (e.g., $2a$12$...).
-     */
     public static String generateSalt() {
         SecureRandom random = new SecureRandom();
         byte[] salt = new byte[32];
@@ -36,7 +25,7 @@ public class PasswordUtil {
 
             return DatatypeConverter.printHexBinary(bytePassword).toUpperCase();
         } catch (Exception e) {
-            throw new RuntimeException("não deu certo");
+            throw new RuntimeException("Failed to hash password", e);
         }
     }
 
