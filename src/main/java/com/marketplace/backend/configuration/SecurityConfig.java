@@ -43,7 +43,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/order/**").hasAnyRole(ESTABLISHMENT, CUSTOMER,WAITER)
-                        .requestMatchers("/auth/establishment/register").hasRole(ESTABLISHMENT)
                         .requestMatchers("/customer/**").hasAnyRole(ESTABLISHMENT, CUSTOMER)
                         .requestMatchers("/coupon/**", "/waiter/**","/product/**").hasRole(ESTABLISHMENT)
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
